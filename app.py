@@ -14,7 +14,7 @@ from sklearn.metrics.pairwise import linear_kernel
 # genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 st.set_page_config(page_title='Job Recommender System')
-
+data_dir = 'data/'
 
 # Load job posting data
 @st.cache(allow_output_mutation=True)
