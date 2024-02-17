@@ -13,7 +13,6 @@ from sklearn.metrics.pairwise import linear_kernel
 import nltk
 import spacy
 
-nltk.download('stopwords')
 from nltk.stem.snowball import EnglishStemmer
 import re
 
