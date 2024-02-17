@@ -56,7 +56,7 @@ def recommend_jobs(resume: str, item_count: int = 30) -> pd.DataFrame:
                             ngram_range=(1, 2)
                            ).fit(data_jd)
   
-    description_matrix = tfdif.transform(jobs_list)
+    description_matrix = tfidf.transform(jobs_list)
     similarity_matrix = linear_kernel(description_matrix)
 
     job_index = 0
