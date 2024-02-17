@@ -1,6 +1,9 @@
 # from dotenv import load_dotenv
 import json
 import os
+from os import path, listdir
+import numpy as np
+import pandas as pd
 import PyPDF2 as pdf
 import streamlit as st
 import google.generativeai as genai
