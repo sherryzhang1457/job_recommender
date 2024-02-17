@@ -10,7 +10,12 @@ import google.generativeai as genai
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+import nltk
+import spacy
 
+nltk.download('stopwords')
+from nltk.stem.snowball import EnglishStemmer
+import re
 
 # use gemini pro LLM model API
 # load_dotenv()
