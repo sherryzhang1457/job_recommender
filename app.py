@@ -20,7 +20,7 @@ import re
 # load_dotenv()
 # genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-st.set_page_config(page_title='Job Recommender System')
+# st.set_page_config(page_title='Job Recommender System')
 data_dir = 'data/'
 
 # Load job posting data
@@ -80,7 +80,7 @@ data = load_data()
 data_jd = data['job_summary']
 resume = ''
 
-
+st.title("Data Science Job Recommender System")
 with st.container():
     col1, col2, col3 = st.columns((2, 0.5, 2))
 
