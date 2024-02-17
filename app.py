@@ -82,7 +82,7 @@ resume = ''
 
 st.title("Data Science Job Recommender System")
 with st.container():
-    col1, col2, col3 = st.columns((2, 0.5, 2))
+    col1, col2, col3 = st.columns((3, 0.5, 3))
 
     with col1:
         uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
