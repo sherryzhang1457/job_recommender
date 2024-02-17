@@ -27,7 +27,7 @@ def load_data() -> pd.DataFrame:
     #     map(lambda csv: pd.read_csv(csv, index_col=0), csv_files),
     #     ignore_index=True
     # )
-    df = pd.read_csv(data_dir + 'postings.csv')
+    df = pd.read_csv('postings.csv')
     df['job_summary'] = df['job_summary'].fillna('')
 
     return df
