@@ -22,11 +22,12 @@ data_dir = 'data/'
 # Load job posting data
 @st.cache(allow_output_mutation=True)
 def load_data() -> pd.DataFrame:
-    csv_files = [path.join(data_dir, csv) for csv in listdir(data_dir)]
-    df = pd.concat(
-        map(lambda csv: pd.read_csv(csv, index_col=0), csv_files),
-        ignore_index=True
-    )
+    # csv_files = [path.join(data_dir, csv) for csv in listdir(data_dir)]
+    # df = pd.concat(
+    #     map(lambda csv: pd.read_csv(csv, index_col=0), csv_files),
+    #     ignore_index=True
+    # )
+    df = pd.read_csv(data_dir + 'postings.csv')
     df['job_summary'] = df['job_summary'].fillna('')
 
     return df
