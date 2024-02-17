@@ -74,6 +74,8 @@ def input_pdf_text(uploaded_file):
   
 data = load_data()
 data_jd = data['job_summary']
+resume = ''
+
 
 with st.container():
     col1, col2, col3 = st.columns((2, 0.5, 2))
