@@ -1,4 +1,4 @@
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import json
 import os
 from os import path, listdir
@@ -17,8 +17,35 @@ from nltk.stem.snowball import EnglishStemmer
 import re
 
 # use gemini pro LLM model API
-# load_dotenv()
-# genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+load_dotenv()
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+def get_gemini_response(input,pdf_content,prompt):
+    model=genai.GenerativeModel('gemini-pro')
+    generation_config = genai.GenerationConfig(
+    temperature=0.0
+    )
+    response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
+    return response.text
+
+input_prompt_resume1 = """
+You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
+your task is to evaluate the resume against the provided job description. 
+Find out the requirements that make this resume disqualified for this job in a list.
+"""
+
+input_prompt_resume2 = """
+You are submitting a resume to a job with the provided job description. 
+Find out the requirements in the job description you should add to make you qualify for this job.
+"""
+
+input_prompt_cover_letter = """
+You are the applicant who applied for this job and want to compose a strong but concise coverletter to convince the employer you have the skills and the expereince for this job.
+The first paragraph of the  cover letter must briefly discuss the your backgroud. 
+The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements.
+The third paragraph discuss the your interest in this role and thanks for the consideration .
+"""
+
 
 # st.set_page_config(page_title='Job Recommender System')
 data_dir = 'data/'
@@ -108,3 +135,8 @@ if resume != '':
                 st.write(result['job_summary'])
 
                 st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
+
+                response=get_gemini_response(input_prompt_resume1,text,jd)
+                st.subheader("Disqualifications")
+                st.write(response)              
+                
