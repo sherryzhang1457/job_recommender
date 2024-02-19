@@ -65,8 +65,8 @@ data_dir = 'data/'
 # conn.create_collection(collection_name=collection_name,
 #                        embedding_function_name=embedding_function_name)
 
+chroma_client = chromadb.Client()
 def create_chroma_db(df, name):
-  chroma_client = chromadb.Client()
   default_ef = embedding_functions.DefaultEmbeddingFunction()
   db = chroma_client.create_collection(name=name, embedding_function=default_ef)
 
@@ -83,10 +83,13 @@ def create_chroma_db(df, name):
 # Set up the DB
 job_postings = pd.read_csv('postings.csv')
 job_postings = job_postings.dropna()
-db = create_chroma_db(job_postings, "jobdatabase")
+
+collection = chroma_client.get_collection(name="jobdatabase", embedding_function=emb_fn)
+if not collection:
+    collection = create_chroma_db(job_postings, "jobdatabase")
 
 # Confirm that the data was inserted by looking at the database
-pd.DataFrame(db.peek(3))
+pd.DataFrame(collection.peek(3))
 
 def get_relevant_passage(query, db):
   passage = db.query(query_texts=[query], n_results=1)['documents'][0][0]
@@ -149,8 +152,8 @@ with st.container():
 if resume != '':
     # results = recommend_jobs(resume, result_count)
     # Perform embedding search
-    results = get_relevant_passage(resume, db)
-    Markdown(results)
+    results = get_relevant_passage(resume, collection)
+    st.write(results)
     
     with st.container():
         for index, result in results.iterrows():
