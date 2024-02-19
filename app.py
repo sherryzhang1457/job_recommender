@@ -85,6 +85,15 @@ job_postings = pd.read_csv('postings.csv')
 job_postings = job_postings.dropna()
 db = create_chroma_db(job_postings, "jobdatabase")
 
+# Confirm that the data was inserted by looking at the database
+pd.DataFrame(db.peek(3))
+
+def get_relevant_passage(query, db):
+  passage = db.query(query_texts=[query], n_results=1)['documents'][0][0]
+  return passage
+
+
+
 # def recommend_jobs(resume: str, item_count: int = 30) -> pd.DataFrame:
 #     jobs_list = pd.concat(
 #         [pd.Series([resume]), data_jd],
@@ -118,8 +127,8 @@ def input_pdf_text(uploaded_file):
         text+=str(page.extract_text())
     return text
   
-data = load_data()
-data_jd = data['job_summary']
+# data = load_data()
+# data_jd = data['job_summary']
 resume = ''
 
 st.title("Data Science Job Recommender System")
@@ -138,8 +147,11 @@ with st.container():
         st.write('')
 
 if resume != '':
-    results = recommend_jobs(resume, result_count)
-
+    # results = recommend_jobs(resume, result_count)
+    # Perform embedding search
+    results = get_relevant_passage(resume, db)
+    Markdown(results)
+    
     with st.container():
         for index, result in results.iterrows():
             with st.expander(result['job_title']):
