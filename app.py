@@ -11,7 +11,7 @@ import PyPDF2 as pdf
 import streamlit as st
 import google.generativeai as genai
 import chromadb
-from streamlit_chromadb_connection.chromadb_connection import ChromadbConnection
+# from streamlit_chromadb_connection.chromadb_connection import ChromadbConnection
 from chromadb.utils import embedding_functions
 
 
