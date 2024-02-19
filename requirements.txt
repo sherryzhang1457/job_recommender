@@ -6,3 +6,4 @@ PyPDF2
 google-generativeai
 python-dotenv
 chromadb
+streamlit-chromadb-connection
