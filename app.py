@@ -87,9 +87,9 @@ def create_chroma_db(df, name):
 job_postings = pd.read_csv('postings.csv')
 job_postings = job_postings.dropna()
 
-collection = chroma_client.get_collection(name="jobdatabase", embedding_function=default_ef)
-if not collection:
-    collection = create_chroma_db(job_postings, "jobdatabase")
+# collection = chroma_client.get_collection(name="jobdatabase", embedding_function=default_ef)
+# if not collection:
+collection = create_chroma_db(job_postings, "jobdatabase")
 
 # Confirm that the data was inserted by looking at the database
 pd.DataFrame(collection.peek(3))
