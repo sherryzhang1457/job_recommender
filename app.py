@@ -8,6 +8,9 @@ import PyPDF2 as pdf
 import streamlit as st
 import google.generativeai as genai
 import chromadb
+from streamlit_chromadb_connection.chromadb_connection import ChromadbConnection
+from chromadb.utils import embedding_functions
+
 
 # use gemini pro LLM model API
 load_dotenv()
@@ -43,35 +46,69 @@ st.set_page_config(page_title='Job Recommender System')
 data_dir = 'data/'
 
 # Initiating a persistent Chroma client
-client = chromadb.PersistentClient(path="/tmp/job_db")
+# Data will be persisted to a local machine
+# configuration = {
+#     "client": "PersistentClient",
+#     "path": "/tmp/.chroma"
+# }
 
+# collection_name = "documents_collection"
 
+# conn = st.connection("chromadb",
+#                      type=ChromaDBConnection,
+#                      **configuration)
+# documents_collection_df = conn.get_collection_data(collection_name)
+# st.dataframe(documents_collection_df)
+# # create a Chroma collection
+# collection_name = "documents_collection"
+# embedding_function_name = "DefaultEmbedding"
+# conn.create_collection(collection_name=collection_name,
+#                        embedding_function_name=embedding_function_name)
 
+def create_chroma_db(df, name):
+  chroma_client = chromadb.Client()
+  default_ef = embedding_functions.DefaultEmbeddingFunction()
+  db = chroma_client.create_collection(name=name, embedding_function=default_ef)
 
-def recommend_jobs(resume: str, item_count: int = 30) -> pd.DataFrame:
-    jobs_list = pd.concat(
-        [pd.Series([resume]), data_jd],
-        ignore_index=True
+  for index, row in df.iterrows():
+    db.add(
+      documents=row['job_summary']
+      metadatas=[{"title": row['job_title'], 
+                  "company": row['company'],
+                 }],
+      ids=str(index)
     )
-    tfidf = TfidfVectorizer(stop_words='english',
-                            tokenizer=stem_tokenizer,
-                            lowercase=True,
-                            max_df=0.7,
-                            min_df=1,
-                            ngram_range=(1, 2)
-                           ).fit(data_jd)
+  return db
+    
+# Set up the DB
+job_postings = pd.read_csv('postings.csv')
+job_postings = job_postings.dropna()
+db = create_chroma_db(job_postings, "jobdatabase")
+
+# def recommend_jobs(resume: str, item_count: int = 30) -> pd.DataFrame:
+#     jobs_list = pd.concat(
+#         [pd.Series([resume]), data_jd],
+#         ignore_index=True
+#     )
+#     tfidf = TfidfVectorizer(stop_words='english',
+#                             tokenizer=stem_tokenizer,
+#                             lowercase=True,
+#                             max_df=0.7,
+#                             min_df=1,
+#                             ngram_range=(1, 2)
+#                            ).fit(data_jd)
   
-    description_matrix = tfidf.transform(jobs_list)
-    similarity_matrix = linear_kernel(description_matrix)
+#     description_matrix = tfidf.transform(jobs_list)
+#     similarity_matrix = linear_kernel(description_matrix)
 
-    job_index = 0
+#     job_index = 0
 
-    similarity_score = list(enumerate(similarity_matrix[job_index]))
-    similarity_score = sorted(similarity_score, key=lambda x: x[1], reverse=True)
-    similarity_score = similarity_score[1:item_count + 1]
+#     similarity_score = list(enumerate(similarity_matrix[job_index]))
+#     similarity_score = sorted(similarity_score, key=lambda x: x[1], reverse=True)
+#     similarity_score = similarity_score[1:item_count + 1]
 
-    job_indices = [i[0] for i in similarity_score]
-    return data.iloc[job_indices]
+#     job_indices = [i[0] for i in similarity_score]
+#     return data.iloc[job_indices]
 
 def input_pdf_text(uploaded_file):
     reader=pdf.PdfReader(uploaded_file)
@@ -114,7 +151,17 @@ if resume != '':
 
                 st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
 
-                response=get_gemini_response(input_prompt_resume1,text,jd)
-                st.subheader("Disqualifications")
-                st.write(response)              
+                submit = st.button("Generate LLM-powered results")
+                if submit:
+                    response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
+                    st.subheader("Disqualifications")
+                    st.write(response)        
+    
+                    response=get_gemini_response(input_prompt_resume2,resume,result['job_summary'])
+                    st.subheader("Skills you may want to add")
+                    st.write(response)
+    
+                    response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
+                    st.subheader("Coverletter")
+                    st.write(response)
                 
