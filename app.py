@@ -72,7 +72,7 @@ def create_chroma_db(df, name):
 
   for index, row in df.iterrows():
     db.add(
-      documents=row['job_summary']
+      documents=row['job_summary'],
       metadatas=[{"title": row['job_title'], 
                   "company": row['company'],
                  }],
