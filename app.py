@@ -75,7 +75,7 @@ def update_chroma_db(df, name):
   chroma_client.create_collection(name=name, embedding_function=default_ef)
 
   for index, row in df.iterrows():
-    db.add(
+    collection.add(
       documents=row['job_summary'],
       metadatas=[{"title": row['job_title'], 
                   "company": row['company'],
