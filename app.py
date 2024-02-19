@@ -69,8 +69,8 @@ data_dir = 'data/'
 #                        embedding_function_name=embedding_function_name)
 
 chroma_client = chromadb.Client()
+default_ef = embedding_functions.DefaultEmbeddingFunction()
 def create_chroma_db(df, name):
-  default_ef = embedding_functions.DefaultEmbeddingFunction()
   db = chroma_client.create_collection(name=name, embedding_function=default_ef)
 
   for index, row in df.iterrows():
@@ -87,7 +87,7 @@ def create_chroma_db(df, name):
 job_postings = pd.read_csv('postings.csv')
 job_postings = job_postings.dropna()
 
-collection = chroma_client.get_collection(name="jobdatabase", embedding_function=emb_fn)
+collection = chroma_client.get_collection(name="jobdatabase", embedding_function=default_ef)
 if not collection:
     collection = create_chroma_db(job_postings, "jobdatabase")
 
