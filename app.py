@@ -71,8 +71,8 @@ data_dir = 'data/'
 # chroma_client = chromadb.Client()
 chroma_client = chromadb.PersistentClient(path='db/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
-def update_chroma_db(df, name):
-  chroma_client.create_collection(name=name, embedding_function=default_ef)
+def update_chroma_db(df, collection):
+  # chroma_client.create_collection(name=name, embedding_function=default_ef)
 
   for index, row in df.iterrows():
     collection.add(
@@ -82,15 +82,15 @@ def update_chroma_db(df, name):
                  }],
       ids=str(index)
     )
-  return db
+  return collection
     
 # Set up the DB
 job_postings = pd.read_csv('postings.csv')
 job_postings = job_postings.dropna()
 
-collection = chroma_client.get_or_create_collection(name="test")
+collection = chroma_client.get_or_create_collection(name="jobdatabase")
 # if not collection:
-collection = update_chroma_db(job_postings, "jobdatabase")
+update_chroma_db(job_postings, collection)
 
 # Confirm that the data was inserted by looking at the database
 pd.DataFrame(collection.peek(3))
