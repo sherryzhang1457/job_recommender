@@ -88,7 +88,7 @@ def update_chroma_db(df, name):
 job_postings = pd.read_csv('postings.csv')
 job_postings = job_postings.dropna()
 
-collection collection = chroma_client.get_or_create_collection(name="test")
+collection = chroma_client.get_or_create_collection(name="test")
 # if not collection:
 collection = update_chroma_db(job_postings, "jobdatabase")
 
