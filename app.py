@@ -7,14 +7,7 @@ import pandas as pd
 import PyPDF2 as pdf
 import streamlit as st
 import google.generativeai as genai
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
-import nltk
-import spacy
-
-from nltk.stem.snowball import EnglishStemmer
-import re
+import chromadb
 
 # use gemini pro LLM model API
 load_dotenv()
@@ -46,28 +39,13 @@ The second paragraph discuss how the applicant fit this role based on your skill
 The third paragraph discuss the your interest in this role and thanks for the consideration .
 """
 
-
-# st.set_page_config(page_title='Job Recommender System')
+st.set_page_config(page_title='Job Recommender System')
 data_dir = 'data/'
 
-# Load job posting data
-@st.cache(allow_output_mutation=True)
-def load_data() -> pd.DataFrame:
-    # csv_files = [path.join(data_dir, csv) for csv in listdir(data_dir)]
-    # df = pd.concat(
-    #     map(lambda csv: pd.read_csv(csv, index_col=0), csv_files),
-    #     ignore_index=True
-    # )
-    df = pd.read_csv('postings.csv')
-    df['job_summary'] = df['job_summary'].fillna('')
+# Initiating a persistent Chroma client
+client = chromadb.PersistentClient(path="/tmp/job_db")
 
-    return df
 
-def stem_tokenizer(text):
-    # stemmer = EnglishStemmer(ignore_stopwords=True)
-    words = re.sub(r"[^A-Za-z0-9\-]", " ", text).lower().split()
-    # words = [stemmer.stem(word) for word in words]
-    return words
 
 
 def recommend_jobs(resume: str, item_count: int = 30) -> pd.DataFrame:
