@@ -71,34 +71,29 @@ data_dir = 'data/'
 # chroma_client = chromadb.Client()
 chroma_client = chromadb.PersistentClient(path='db/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
-def update_chroma_db(df, collection):
-  # chroma_client.create_collection(name=name, embedding_function=default_ef)
-
-  for index, row in df.iterrows():
-    collection.add(
-      documents=row['job_summary'],
-      metadatas=[{"title": row['job_title'], 
-                  "company": row['company'],
-                 }],
-      ids=str(index)
-    )
-  return collection
+# def update_chroma_db(df, collection):
+#   for index, row in df.iterrows():
+#     collection.add(
+#       documents=row['job_summary'],
+#       metadatas=[{"title": row['job_title'], 
+#                   "company": row['company'],
+#                  }],
+#       ids=str(index)
+#     )
+#   return collection
     
 # Set up the DB
 job_postings = pd.read_csv('postings.csv')
-job_postings = job_postings.dropna()
+job_postings = job_postings.fillna('')
 
-collection = chroma_client.get_or_create_collection(name="jobdatabase")
+collection = chroma_client.get_or_create_collection(name="job_postings")
 # if not collection:
-update_chroma_db(job_postings, collection)
+# update_chroma_db(job_postings, collection)
 
-# Confirm that the data was inserted by looking at the database
-pd.DataFrame(collection.peek(3))
 
-def get_relevant_passage(query, db):
-  passage = db.query(query_texts=[query], n_results=1)['documents'][0][0]
-  return passage
-
+def get_relevant_ids(query, db, count, df):
+    ids = db.query(query_texts=[query], n_results=count)['ids'][0]
+    return df.iloc[ids]
 
 
 # def recommend_jobs(resume: str, item_count: int = 30) -> pd.DataFrame:
@@ -134,8 +129,6 @@ def input_pdf_text(uploaded_file):
         text+=str(page.extract_text())
     return text
   
-# data = load_data()
-# data_jd = data['job_summary']
 resume = ''
 
 st.title("Data Science Job Recommender System")
@@ -156,8 +149,7 @@ with st.container():
 if resume != '':
     # results = recommend_jobs(resume, result_count)
     # Perform embedding search
-    results = get_relevant_passage(resume, collection)
-    st.write(results)
+    results = get_relevant_ids(resume, collection, result_count, job_postings)
     
     with st.container():
         for index, result in results.iterrows():
