@@ -11,10 +11,9 @@ import PyPDF2 as pdf
 import streamlit as st
 import google.generativeai as genai
 import chromadb
-# from streamlit_chromadb_connection.chromadb_connection import ChromadbConnection
 from chromadb.utils import embedding_functions
 
-
+#------------------------------------------------------------------------------------------------------------------------#
 # use gemini pro LLM model API
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -27,6 +26,7 @@ def get_gemini_response(input,pdf_content,prompt):
     response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
     return response.text
 
+# Generate prompts for resume revision and cover letter template
 input_prompt_resume1 = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
 your task is to evaluate the resume against the provided job description. 
@@ -44,83 +44,24 @@ The first paragraph of the  cover letter must briefly discuss the your backgroud
 The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements.
 The third paragraph discuss the your interest in this role and thanks for the consideration .
 """
+#------------------------------------------------------------------------------------------------------------------------#
 
-st.set_page_config(page_title='Job Recommender System')
-data_dir = 'data/'
-
-# Initiating a persistent Chroma client
-# Data will be persisted to a local machine
-# configuration = {
-#     "client": "PersistentClient",
-#     "path": "/tmp/.chroma"
-# }
-
-# collection_name = "documents_collection"
-
-# conn = st.connection("chromadb",
-#                      type=ChromaDBConnection,
-#                      **configuration)
-# documents_collection_df = conn.get_collection_data(collection_name)
-# st.dataframe(documents_collection_df)
-# # create a Chroma collection
-# collection_name = "documents_collection"
-# embedding_function_name = "DefaultEmbedding"
-# conn.create_collection(collection_name=collection_name,
-#                        embedding_function_name=embedding_function_name)
-
-# chroma_client = chromadb.Client()
+# Get vector database collection from local storage
 chroma_client = chromadb.PersistentClient(path='db/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
-# def update_chroma_db(df, collection):
-#   for index, row in df.iterrows():
-#     collection.add(
-#       documents=row['job_summary'],
-#       metadatas=[{"title": row['job_title'], 
-#                   "company": row['company'],
-#                  }],
-#       ids=str(index)
-#     )
-#   return collection
+collection = chroma_client.get_collection(name="job_postings")
     
-# Set up the DB
+# Read job posting dataset
 job_postings = pd.read_csv('postings.csv')
 job_postings = job_postings.fillna('')
 
-collection = chroma_client.get_or_create_collection(name="job_postings")
-# if not collection:
-# update_chroma_db(job_postings, collection)
-
-
+# Find the most relevant job description and return the job posting information 
 def get_relevant_ids(query, db, count, df):
     ids = db.query(query_texts=[query], n_results=count)['ids'][0]
     return df.iloc[ids]
 
-
-# def recommend_jobs(resume: str, item_count: int = 30) -> pd.DataFrame:
-#     jobs_list = pd.concat(
-#         [pd.Series([resume]), data_jd],
-#         ignore_index=True
-#     )
-#     tfidf = TfidfVectorizer(stop_words='english',
-#                             tokenizer=stem_tokenizer,
-#                             lowercase=True,
-#                             max_df=0.7,
-#                             min_df=1,
-#                             ngram_range=(1, 2)
-#                            ).fit(data_jd)
-  
-#     description_matrix = tfidf.transform(jobs_list)
-#     similarity_matrix = linear_kernel(description_matrix)
-
-#     job_index = 0
-
-#     similarity_score = list(enumerate(similarity_matrix[job_index]))
-#     similarity_score = sorted(similarity_score, key=lambda x: x[1], reverse=True)
-#     similarity_score = similarity_score[1:item_count + 1]
-
-#     job_indices = [i[0] for i in similarity_score]
-#     return data.iloc[job_indices]
-
+# Upload resume
+resume = ''
 def input_pdf_text(uploaded_file):
     reader=pdf.PdfReader(uploaded_file)
     text=""
@@ -128,12 +69,12 @@ def input_pdf_text(uploaded_file):
         page=reader.pages[page]
         text+=str(page.extract_text())
     return text
-  
-resume = ''
 
+#------------------------------------------------------------------------------------------------------------------------#
+# Page setup
 st.title("Data Science Job Recommender System")
 with st.container():
-    col1, col2, col3 = st.columns((3, 0.5, 3))
+    col1, col2, col3 = st.columns((4, 0.5, 4))
 
     with col1:
         uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
@@ -147,10 +88,9 @@ with st.container():
         st.write('')
 
 if resume != '':
-    # results = recommend_jobs(resume, result_count)
     submit = st.button("Generate LLM-powered results")
     if submit:
-    # Perform embedding search
+    # Perform embedding search with vector database
         results = get_relevant_ids(resume, collection, result_count, job_postings)
         
         with st.container():
