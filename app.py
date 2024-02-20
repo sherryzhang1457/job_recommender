@@ -148,31 +148,32 @@ with st.container():
 
 if resume != '':
     # results = recommend_jobs(resume, result_count)
+    submit = st.button("Generate LLM-powered results")
+    if submit:
     # Perform embedding search
-    results = get_relevant_ids(resume, collection, result_count, job_postings)
+        results = get_relevant_ids(resume, collection, result_count, job_postings)
+        
+        with st.container():
+            for index, result in results.iterrows():
+                with st.expander(result['job_title']):
+                    st.write('**Location:** ' + result['job_location'])
+                    st.write('**Company:** ' + result['company'])
     
-    with st.container():
-        for index, result in results.iterrows():
-            with st.expander(result['job_title']):
-                st.write('**Location:** ' + result['job_location'])
-                st.write('**Company:** ' + result['company'])
-
-                st.markdown('**Job Description**')
-                st.write(result['job_summary'])
-
-                st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
-
-                # submit = st.button("Generate LLM-powered results")
-                # if submit:
-                response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
-                st.subheader("Disqualifications")
-                st.write(response)        
-
-                response=get_gemini_response(input_prompt_resume2,resume,result['job_summary'])
-                st.subheader("Skills you may want to add")
-                st.write(response)
-
-                response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
-                st.subheader("Coverletter")
-                st.write(response)
-                
+                    st.markdown('**Job Description**')
+                    st.write(result['job_summary'])
+    
+                    st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
+    
+    
+                    response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
+                    st.subheader("Disqualifications")
+                    st.write(response)        
+    
+                    response=get_gemini_response(input_prompt_resume2,resume,result['job_summary'])
+                    st.subheader("Skills you may want to add")
+                    st.write(response)
+    
+                    response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
+                    st.subheader("Coverletter")
+                    st.write(response)
+                    
