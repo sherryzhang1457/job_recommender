@@ -162,17 +162,17 @@ if resume != '':
 
                 st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
 
-                submit = st.button("Generate LLM-powered results")
-                if submit:
-                    response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
-                    st.subheader("Disqualifications")
-                    st.write(response)        
-    
-                    response=get_gemini_response(input_prompt_resume2,resume,result['job_summary'])
-                    st.subheader("Skills you may want to add")
-                    st.write(response)
-    
-                    response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
-                    st.subheader("Coverletter")
-                    st.write(response)
+                # submit = st.button("Generate LLM-powered results")
+                # if submit:
+                response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
+                st.subheader("Disqualifications")
+                st.write(response)        
+
+                response=get_gemini_response(input_prompt_resume2,resume,result['job_summary'])
+                st.subheader("Skills you may want to add")
+                st.write(response)
+
+                response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
+                st.subheader("Coverletter")
+                st.write(response)
                 
