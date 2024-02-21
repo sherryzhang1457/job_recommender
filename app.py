@@ -20,7 +20,7 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def get_gemini_response(input,pdf_content,prompt):
     generation_config = {
-        "temperature": 0
+        "temperature": 0,
         "maxOutputTokens": 1024
     }
     model=genai.GenerativeModel(model_name = 'gemini-pro',
