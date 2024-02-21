@@ -74,9 +74,10 @@ def input_pdf_text(uploaded_file):
 
 #------------------------------------------------------------------------------------------------------------------------#
 # Page setup
+st.set_page_config(page_title='Job Recommender System')
 st.title("Data Science Job Recommender System")
 with st.container():
-    col1, col2, col3 = st.columns((4, 0.5, 4))
+    col1, col2, col3 = st.columns((10, 0.5, 10))
 
     with col1:
         uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
