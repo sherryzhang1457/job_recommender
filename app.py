@@ -22,7 +22,7 @@ def get_gemini_response(input,pdf_content,prompt):
     model=genai.GenerativeModel('gemini-pro')
     generation_config = genai.GenerationConfig(
         temperature = 0.0,
-        max_output_tokens = 1024
+        # max_output_tokens = 1024
     )
     response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
     return response.text
