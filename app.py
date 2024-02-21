@@ -19,11 +19,13 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def get_gemini_response(input,pdf_content,prompt):
-    model=genai.GenerativeModel('gemini-pro')
-    generation_config = genai.GenerationConfig(
-    temperature=0.0
-    )
-    response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
+    generation_config = {
+        "temperature": 0
+        "maxOutputTokens": 1024
+    }
+    model=genai.GenerativeModel(model_name = 'gemini-pro',
+                               generation_config = generation_config)
+    response=model.generate_content([input,pdf_content,prompt])
     return response.text
 
 # Generate prompts for resume revision and cover letter template
