@@ -64,7 +64,7 @@ job_postings = job_postings.fillna('')
 # Find the most relevant job description and return the job posting information 
 def get_relevant_ids(query, db, count, df):
     result = db.query(query_texts=[query], n_results=3, include = ["distances"])
-    ids = result['ids']
+    ids = result['ids'][0]
     score = result['distances']
     return df.iloc[ids], score
 
