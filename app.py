@@ -13,8 +13,8 @@ import google.generativeai as genai
 import chromadb
 from chromadb.utils import embedding_functions
 
-#------------------------------------------------------------------------------------------------------------------------#
-# use gemini pro LLM model API
+#--------------------------------------------LLM (Gemini pro) API-----------------------------------------------------------#
+# load gemini pro LLM model API from environment variable
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
@@ -28,7 +28,8 @@ def get_gemini_response(input,pdf_content,prompt):
     response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
     return response.text
 
-# Generate prompts for resume revision and cover letter template
+# Generate prompts to generate resume revision and cover letter template
+
 input_prompt_resume1 = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
 your task is to evaluate the resume against the provided job description. 
@@ -49,7 +50,7 @@ The second paragraph discuss how the applicant fit this role based on your skill
 The third paragraph discuss the your interest in this role and thanks for the consideration.
 Please limit the word count of cover letter no more than 300 words.
 """
-#------------------------------------------------------------------------------------------------------------------------#
+#---------------------------------------------------Vector Database-------------------------------------------------------#
 
 # Get vector database collection from local storage
 chroma_client = chromadb.PersistentClient(path='db/')
@@ -75,14 +76,15 @@ def input_pdf_text(uploaded_file):
         text+=str(page.extract_text())
     return text
 
-#------------------------------------------------------------------------------------------------------------------------#
+#---------------------------------------------------Website---------------------------------------------------------#
 # Page setup
 st.title("Data Science Job Recommendation and Resume Enhancement")
 st.markdown("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \
          job openings and provide specific resume revision suggestion and cover letter template.")
 st.markdown("Please be patient while waiting for the LLM-generated suggestions.") 
 st.divider()
-         
+
+# Sidebar for user interaction
 submit = None
 with st.sidebar:
     uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
@@ -96,7 +98,8 @@ with st.sidebar:
 
     if resume != '':
         submit = st.button("Generate LLM-powered results")
-        
+
+# Show results
 if submit:
 # Perform embedding search with vector database
     results = get_relevant_ids(resume, collection, result_count, job_postings)
