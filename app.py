@@ -3,7 +3,7 @@ import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 from dotenv import load_dotenv
 import json
-import os
+import os, time
 from os import path, listdir
 import numpy as np
 import pandas as pd
