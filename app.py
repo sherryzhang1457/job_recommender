@@ -118,4 +118,5 @@ if resume != '':
                     response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
                     st.subheader("Coverletter")
                     st.write(response)
+                    time.sleep(5)
                     
