@@ -24,27 +24,30 @@ def get_gemini_response(input,pdf_content,prompt):
         temperature = 0.0,
         # max_output_tokens = 1024
     )
-    response=model.generate_content([input,pdf_content,prompt])
-    # response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
+    # response=model.generate_content([input,pdf_content,prompt])
+    response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
     return response.text
 
 # Generate prompts for resume revision and cover letter template
 input_prompt_resume1 = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
 your task is to evaluate the resume against the provided job description. 
-Find out the requirements that make this resume disqualified for this job in a list.
+Find out the requirements that make this resume disqualified for this job in a list. 
+Please limit the list up to five most important bullet points.
 """
 
 input_prompt_resume2 = """
 You are submitting a resume to a job with the provided job description. 
 Find out the requirements in the job description you should add to make you qualify for this job.
+Please limit the list up to five most important bullet points.
 """
 
 input_prompt_cover_letter = """
-You are the applicant who applied for this job and want to compose a strong but concise coverletter to convince the employer you have the skills and the expereince for this job.
+You are the applicant who applied for this job and want to compose a strong but concise cover letter to convince the employer you have the skills and the expereince for this job.
 The first paragraph of the  cover letter must briefly discuss the your backgroud. 
 The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements.
-The third paragraph discuss the your interest in this role and thanks for the consideration .
+The third paragraph discuss the your interest in this role and thanks for the consideration.
+Please limit the word count of cover letter no more than 300 words.
 """
 #------------------------------------------------------------------------------------------------------------------------#
 
