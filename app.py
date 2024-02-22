@@ -80,7 +80,8 @@ def input_pdf_text(uploaded_file):
 st.title("Data Science Job Recommendation and Resume Enhancement")
 st.markdown("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \
          job openings and provide specific resume revision suggestion and cover letter template.")
-st.text("Please be patient waiting for the LLM-powered suggestions.") 
+st.markdown("Please be patient while waiting for the LLM-generated suggestions.") 
+st.divider()
          
 submit = None
 with st.sidebar:
