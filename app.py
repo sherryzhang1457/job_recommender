@@ -78,7 +78,7 @@ def input_pdf_text(uploaded_file):
 #------------------------------------------------------------------------------------------------------------------------#
 # Page setup
 st.title("Data Science Job Recommendation and Resume Enhancement")
-st.text("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \n
+st.markdown("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \
          job openings and provide specific resume revision suggestion and cover letter template.")
 st.text("Please be patient waiting for the LLM-powered suggestions.") 
          
