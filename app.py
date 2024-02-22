@@ -105,6 +105,7 @@ with st.sidebar:
 if submit:
 # Perform embedding search with vector database
     results, scores = get_relevant_ids(resume, collection, result_count, job_postings)
+    results.reset_index(inplace = True)
     
     with st.container():
         for index, result in results.iterrows():
