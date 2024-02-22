@@ -94,15 +94,14 @@ if submit:
     
     with st.container():
         for index, result in results.iterrows():
-            with st.expander(result['job_title']):
-                st.write('**Location:** ' + result['job_location'])
+            job_info = result['job_title'] + ', ' + result['job_location']
+            with st.expander():
                 st.write('**Company:** ' + result['company'])
 
                 st.markdown('**Job Description**')
                 st.write(result['job_summary'])
-
-                st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
-
+                st.link_button("Apply it!", result["job_link"])
+                st.page_link(result["job_link"], label="Apply it!")
 
                 response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
                 st.subheader("Disqualifications")
