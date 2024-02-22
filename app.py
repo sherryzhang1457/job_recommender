@@ -78,10 +78,10 @@ def input_pdf_text(uploaded_file):
 #------------------------------------------------------------------------------------------------------------------------#
 # Page setup
 st.title("Data Science Job Recommendation and Resume Enhancement")
-st.text('Powered by Gemini Pro and Chroma vector database to help you find the most relevant job openings and provide ]
-         specific resume revision suggestion and cover letter template \n
-         Please be patient waiting for the LLM-powered suggestions.  \ 
-         ')
+st.text("Powered by Gemini Pro and Chroma vector database to help you find the most relevant job openings and provide ]
+         specific resume revision suggestion and cover letter template.")
+st.text("Please be patient waiting for the LLM-powered suggestions.") 
+         
 submit = None
 with st.sidebar:
     uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
