@@ -78,6 +78,7 @@ def input_pdf_text(uploaded_file):
 #------------------------------------------------------------------------------------------------------------------------#
 # Page setup
 st.title("Data Science Job Recommender System")
+submit = None
 with st.sidebar:
     uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
   
