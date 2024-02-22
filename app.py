@@ -75,48 +75,45 @@ def input_pdf_text(uploaded_file):
 #------------------------------------------------------------------------------------------------------------------------#
 # Page setup
 st.title("Data Science Job Recommender System")
-with st.container():
-    col1, col2, col3 = st.columns((4, 0.5, 4))
+with st.sidebar:
+    uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
+  
+    if uploaded_file is not None:
+        st.write("PDF Uploaded Successfully")
+        resume = input_pdf_text(uploaded_file)
 
-    with col1:
-        uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
-      
-        if uploaded_file is not None:
-            st.write("PDF Uploaded Successfully")
-            resume = input_pdf_text(uploaded_file)
+    result_count = st.number_input('Results count', 1, 100, 30)
+    st.write('')
 
-    with col3:
-        result_count = st.number_input('Results count', 1, 100, 30)
-        st.write('')
-
-if resume != '':
-    submit = st.button("Generate LLM-powered results")
-    if submit:
-    # Perform embedding search with vector database
-        results = get_relevant_ids(resume, collection, result_count, job_postings)
+    if resume != '':
+        submit = st.button("Generate LLM-powered results")
         
-        with st.container():
-            for index, result in results.iterrows():
-                with st.expander(result['job_title']):
-                    st.write('**Location:** ' + result['job_location'])
-                    st.write('**Company:** ' + result['company'])
+if submit:
+# Perform embedding search with vector database
+    results = get_relevant_ids(resume, collection, result_count, job_postings)
     
-                    st.markdown('**Job Description**')
-                    st.write(result['job_summary'])
-    
-                    st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
-    
-    
-                    response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
-                    st.subheader("Disqualifications")
-                    st.write(response)        
-    
-                    response=get_gemini_response(input_prompt_resume2,resume,result['job_summary'])
-                    st.subheader("Skills you may want to add")
-                    st.write(response)
-    
-                    response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
-                    st.subheader("Coverletter")
-                    st.write(response)
-                    time.sleep(5)
-                    
+    with st.container():
+        for index, result in results.iterrows():
+            with st.expander(result['job_title']):
+                st.write('**Location:** ' + result['job_location'])
+                st.write('**Company:** ' + result['company'])
+
+                st.markdown('**Job Description**')
+                st.write(result['job_summary'])
+
+                st.write(f'**Link:** [{result["job_link"]}]({result["job_link"]})')
+
+
+                response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
+                st.subheader("Disqualifications")
+                st.write(response)        
+
+                response=get_gemini_response(input_prompt_resume2,resume,result['job_summary'])
+                st.subheader("Skills you may want to add")
+                st.write(response)
+
+                response=get_gemini_response(input_prompt_cover_letter,resume,result['job_summary'])
+                st.subheader("Coverletter")
+                st.write(response)
+                time.sleep(5)
+                
