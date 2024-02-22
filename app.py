@@ -63,8 +63,10 @@ job_postings = job_postings.fillna('')
 
 # Find the most relevant job description and return the job posting information 
 def get_relevant_ids(query, db, count, df):
-    ids = db.query(query_texts=[query], n_results=count)['ids'][0]
-    return df.iloc[ids]
+    result = db.query(query_texts=[query], n_results=3, include = ["distances"])
+    ids = result['ids']
+    score = result['distances']
+    return df.iloc[ids], score
 
 # Upload resume
 resume = ''
@@ -102,12 +104,13 @@ with st.sidebar:
 # Show results
 if submit:
 # Perform embedding search with vector database
-    results = get_relevant_ids(resume, collection, result_count, job_postings)
+    results, scores = get_relevant_ids(resume, collection, result_count, job_postings)
     
     with st.container():
         for index, result in results.iterrows():
             job_info = result['job_title'] + ' | ' + result['job_location'] + ' | ' + result['company'] 
             with st.expander(job_info):
+                st.markdown(f'Similarity score: **{ scores[index] }**')
                 st.markdown('**Job Description**')
                 st.write(result['job_summary'])
                 st.link_button("Apply it!", result["job_link"], type="primary")
