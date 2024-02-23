@@ -24,8 +24,8 @@ def get_gemini_response(input,pdf_content,prompt):
         temperature = 0.0,
         max_output_tokens = 256
     )
-    # response=model.generate_content([input,pdf_content,prompt])
-    response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
+    response=model.generate_content([input,pdf_content,prompt])
+    # response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
