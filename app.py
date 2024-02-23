@@ -120,12 +120,12 @@ if submit:
                 st.subheader("Disqualifications")
                 st.write(response)        
 
-                # response=get_gemini_response(input_prompt_resume2,resume,result['job_description'])
-                # st.subheader("Skills you may want to add")
-                # st.write(response)
+                response=get_gemini_response(input_prompt_resume2,resume,result['job_description'])
+                st.subheader("Skills you may want to add")
+                st.write(response)
 
-                # response=get_gemini_response(input_prompt_cover_letter,resume,result['job_description'])
-                # st.subheader("Coverletter")
-                # st.write(response)
-                # time.sleep(5)
+                response=get_gemini_response(input_prompt_cover_letter,resume,result['job_description'])
+                st.subheader("Coverletter")
+                st.write(response)
+                time.sleep(5)
                 
