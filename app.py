@@ -53,7 +53,7 @@ Please limit the word count of cover letter no more than 300 words.
 #---------------------------------------------------Vector Database-------------------------------------------------------#
 
 # Get vector database collection from local storage
-chroma_client = chromadb.PersistentClient(path='job_database/')
+chroma_client = chromadb.PersistentClient(path='db/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
     
