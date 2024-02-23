@@ -58,7 +58,7 @@ default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
     
 # Read job posting dataset
-job_postings = pd.read_csv('postings.csv')
+job_postings = pd.read_csv('jobs.csv')
 job_postings = job_postings.fillna('')
 
 # Find the most relevant job description and return the job posting information 
@@ -109,13 +109,12 @@ if submit:
     
     with st.container():
         for index, result in results.iterrows():
-            job_info = result['job_title'] + ' | ' + result['job_location'] + ' | ' + result['company'] 
+            job_info = result['job_title'] + ' | ' + (result['job_city'] + ', ' + result['job_state']) + ' | ' + result['employer_name'] 
             with st.expander(job_info):
                 st.markdown(f'Similarity score: **{ scores[index] }**')
                 st.markdown('**Job Description**')
-                st.write(result['job_summary'])
-                st.link_button("Apply it!", result["job_link"], type="primary")
-                # st.page_link(result["job_link"], label="**Apply it!**")
+                st.write(result['job_description'])
+                st.link_button("Apply it!", result["job_apply_link"], type="primary")
 
                 response=get_gemini_response(input_prompt_resume1,resume,result['job_summary'])
                 st.subheader("Disqualifications")
