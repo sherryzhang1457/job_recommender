@@ -116,16 +116,16 @@ if submit:
                 st.write(result['job_description'])
                 st.link_button("Apply it!", result["job_apply_link"], type="primary")
 
-                response=get_gemini_response(input_prompt_resume1,resume,result['job_description'])
-                st.subheader("Disqualifications")
-                st.write(response)        
+                # response=get_gemini_response(input_prompt_resume1,resume,result['job_description'])
+                # st.subheader("Disqualifications")
+                # st.write(response)        
 
-                response=get_gemini_response(input_prompt_resume2,resume,result['job_description'])
-                st.subheader("Skills you may want to add")
-                st.write(response)
+                # response=get_gemini_response(input_prompt_resume2,resume,result['job_description'])
+                # st.subheader("Skills you may want to add")
+                # st.write(response)
 
-                response=get_gemini_response(input_prompt_cover_letter,resume,result['job_description'])
-                st.subheader("Coverletter")
-                st.write(response)
-                time.sleep(5)
+                # response=get_gemini_response(input_prompt_cover_letter,resume,result['job_description'])
+                # st.subheader("Coverletter")
+                # st.write(response)
+                # time.sleep(5)
                 
