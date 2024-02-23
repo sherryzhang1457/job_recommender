@@ -49,7 +49,7 @@ The third paragraph discuss the your interest in this role and thanks for the co
 #------------------------------------------------------------------------------------------------------------------------#
 
 # Get vector database collection from local storage
-chroma_client = chromadb.PersistentClient(path='db/')
+chroma_client = chromadb.PersistentClient(path='job_database/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
     
