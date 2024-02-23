@@ -22,7 +22,7 @@ def get_gemini_response(input,pdf_content,prompt):
     model=genai.GenerativeModel('gemini-pro')
     generation_config = genai.GenerationConfig(
         temperature = 0.0,
-        # max_output_tokens = 1024
+        max_output_tokens = 256
     )
     # response=model.generate_content([input,pdf_content,prompt])
     response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
@@ -116,16 +116,16 @@ if submit:
                 st.write(result['job_description'])
                 st.link_button("Apply it!", result["job_apply_link"], type="primary")
 
-                # response=get_gemini_response(input_prompt_resume1,resume,result['job_description'])
-                # st.subheader("Disqualifications")
-                # st.write(response)        
+                response=get_gemini_response(input_prompt_resume1,resume,result['job_description'])
+                st.subheader("Disqualifications")
+                st.write(response)        
 
-                # response=get_gemini_response(input_prompt_resume2,resume,result['job_description'])
-                # st.subheader("Skills you may want to add")
-                # st.write(response)
+                response=get_gemini_response(input_prompt_resume2,resume,result['job_description'])
+                st.subheader("Skills you may want to add")
+                st.write(response)
 
-                # response=get_gemini_response(input_prompt_cover_letter,resume,result['job_description'])
-                # st.subheader("Coverletter")
-                # st.write(response)
-                # time.sleep(5)
+                response=get_gemini_response(input_prompt_cover_letter,resume,result['job_description'])
+                st.subheader("Coverletter")
+                st.write(response)
+                time.sleep(5)
                 
