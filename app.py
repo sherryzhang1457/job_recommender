@@ -110,8 +110,7 @@ if submit:
     
     with st.container():
         for i in range(len(results)):
-            job_info = result['job_title'] + ' | ' + (result['job_city'] + ', ' + result['job_state']) + ' | ' + result['employer_name'] 
-            with st.expander(meta[i]['citizen']):
+            with st.expander(meta[i]['info']):
                 st.markdown(f'Similarity score: ** %.2f **' %(1 - scores[i]))
                 st.markdown('**Job Description**')
                 st.write(doc[i])
