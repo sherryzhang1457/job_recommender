@@ -115,7 +115,7 @@ if submit:
                 st.markdown('**Job Description**')
                 st.write(doc[i])
                 st.link_button("Apply it!", meta[i]['link'], type="primary")
-                if st.checkbox('Generate LLM results'):
+                if st.checkbox('Generate LLM results', key = i):
                     response=get_gemini_response(input_prompt_resume1,resume,doc[i])
                     st.subheader("Disqualifications")
                     st.write(response)        
