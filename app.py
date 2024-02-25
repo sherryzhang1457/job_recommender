@@ -115,17 +115,19 @@ if submit:
                 st.markdown('**Job Description**')
                 st.write(doc[i])
                 st.link_button("Apply it!", meta[i]['link'], type="primary")
-                if st.checkbox('Generate LLM results', key = i):
-                    response=get_gemini_response(input_prompt_resume1,resume,doc[i])
-                    st.subheader("Disqualifications")
-                    st.write(response)        
-    
-                    response=get_gemini_response(input_prompt_resume2,resume,doc[i])
-                    st.subheader("Skills you may want to add")
-                    st.write(response)
-    
-                    response=get_gemini_response(input_prompt_cover_letter,resume,doc[i])
-                    st.subheader("Coverletter")
-                    st.write(response)
-                time.sleep(5)
-                
+
+                response=get_gemini_response(input_prompt_resume1,resume,doc[i])
+                st.subheader("Disqualifications")
+                st.write(response)        
+
+                response=get_gemini_response(input_prompt_resume2,resume,doc[i])
+                st.subheader("Skills you may want to add")
+                st.write(response)
+
+                response=get_gemini_response(input_prompt_cover_letter,resume,doc[i])
+                st.subheader("Coverletter")
+                st.write(response)
+                time.sleep(2)
+
+                if i % 10 == 0:
+                    time.sleep(5)
