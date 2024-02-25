@@ -111,7 +111,7 @@ if submit:
     with st.container():
         for i in range(len(results)):
             with st.expander(meta[i]['info']):
-                st.markdown(f'Similarity score: ** %.2f **' %(1 - scores[i]))
+                st.markdown(f'Similarity score: ** %.2f **' %(1 - score[i]))
                 st.markdown('**Job Description**')
                 st.write(doc[i])
                 st.link_button("Apply it!", meta[i]['link'], type="primary")
