@@ -24,8 +24,8 @@ def get_gemini_response(input,pdf_content,prompt):
         temperature = 0.0,
         max_output_tokens = 256
     )
-    response=model.generate_content([input,pdf_content,prompt])
-    # response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
+    # response=model.generate_content([input,pdf_content,prompt])
+    response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
@@ -34,7 +34,7 @@ input_prompt_resume1 = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
 your task is to evaluate the resume against the provided job description. 
 Find out the requirements that make this resume disqualified for this job in a list. 
-Please limit the list up to five most important bullet points.
+Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
 """
 
 input_prompt_resume2 = """
