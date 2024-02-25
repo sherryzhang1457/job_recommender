@@ -62,11 +62,13 @@ job_postings = pd.read_csv('jobs.csv')
 job_postings = job_postings.fillna('')
 
 # Find the most relevant job description and return the job posting information 
-def get_relevant_ids(query, db, count, df):
-    result = db.query(query_texts=[query], n_results=count, include = ["distances"])
-    ids = result['ids'][0]
-    score = result['distances'][0]
-    return df.iloc[ids], score
+def get_relevant_ids(query, db, count):
+  passage = db.query(query_texts=[query], n_results=count, include = ["distances", "documents", "metadatas"])
+  ids = passage['ids'][0]
+  cos = passage['distances'][0]
+  doc = passage['documents'][0]
+  metadata = passage['metadatas'][0]
+  return ids, cos, doc, metadata
 
 # Upload resume
 resume = ''
@@ -104,27 +106,26 @@ with st.sidebar:
 # Show results
 if submit:
 # Perform embedding search with vector database
-    results, scores = get_relevant_ids(resume, collection, result_count, job_postings)
-    results.reset_index(inplace = True)
+    results, score, doc, meta = get_relevant_ids(resume, collection, result_count)
     
     with st.container():
-        for index, result in results.iterrows():
+        for i in range(len(results)):
             job_info = result['job_title'] + ' | ' + (result['job_city'] + ', ' + result['job_state']) + ' | ' + result['employer_name'] 
-            with st.expander(job_info):
-                st.markdown(f'Similarity score: **{ scores[index] }**')
+            with st.expander(meta[i]['citizen']):
+                st.markdown(f'Similarity score: ** %.2f **' %(1 - scores[i]))
                 st.markdown('**Job Description**')
-                st.write(result['job_description'])
-                st.link_button("Apply it!", result["job_apply_link"], type="primary")
+                st.write(doc[i])
+                st.link_button("Apply it!", meta[i]['link'], type="primary")
 
-                response=get_gemini_response(input_prompt_resume1,resume,result['job_description'])
+                response=get_gemini_response(input_prompt_resume1,resume,doc[i])
                 st.subheader("Disqualifications")
                 st.write(response)        
 
-                response=get_gemini_response(input_prompt_resume2,resume,result['job_description'])
+                response=get_gemini_response(input_prompt_resume2,resume,doc[i])
                 st.subheader("Skills you may want to add")
                 st.write(response)
 
-                response=get_gemini_response(input_prompt_cover_letter,resume,result['job_description'])
+                response=get_gemini_response(input_prompt_cover_letter,resume,doc[i])
                 st.subheader("Coverletter")
                 st.write(response)
                 time.sleep(5)
