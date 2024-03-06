@@ -19,13 +19,13 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def get_gemini_response(input,pdf_content,prompt):
-    model=genai.GenerativeModel('gemini-pro')
-    generation_config = genai.GenerationConfig(
-        temperature = 0.0,
-        max_output_tokens = 256
-    )
-    # response=model.generate_content([input,pdf_content,prompt])
-    response=model.generate_content([input,pdf_content,prompt],generation_config=generation_config)
+    generation_config = {
+        "temperature": 0
+    }
+    model=genai.GenerativeModel(model_name = 'gemini-pro',
+                               # generation_config = generation_config
+                            )
+    response=model.generate_content([input,pdf_content,prompt])
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
@@ -53,7 +53,7 @@ Please limit the word count of cover letter no more than 300 words.
 #---------------------------------------------------Vector Database-------------------------------------------------------#
 
 # Get vector database collection from local storage
-chroma_client = chromadb.PersistentClient(path='db/')
+chroma_client = chromadb.PersistentClient(path='job_database/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
     
@@ -82,6 +82,7 @@ def input_pdf_text(uploaded_file):
 
 #---------------------------------------------------Website---------------------------------------------------------#
 # Page setup
+
 st.title("Data Science Job Recommendation and Resume Enhancement")
 st.markdown("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \
          job openings and provide specific resume revision suggestion and cover letter template.")
