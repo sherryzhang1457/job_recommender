@@ -53,13 +53,9 @@ Please limit the word count of cover letter no more than 300 words.
 #---------------------------------------------------Vector Database-------------------------------------------------------#
 
 # Get vector database collection from local storage
-chroma_client = chromadb.PersistentClient(path='job_database/')
+chroma_client = chromadb.PersistentClient(path='db/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
-    
-# Read job posting dataset
-job_postings = pd.read_csv('jobs.csv')
-job_postings = job_postings.fillna('')
 
 # Find the most relevant job description and return the job posting information 
 def get_relevant_ids(query, db, count):
@@ -83,7 +79,7 @@ def input_pdf_text(uploaded_file):
 #---------------------------------------------------Website---------------------------------------------------------#
 # Page setup
 
-st.title("Data Science Job Recommendation and Resume Enhancement")
+st.title("Data Science Job Matching and Resume Enhancement")
 st.markdown("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \
          job openings and provide specific resume revision suggestion and cover letter template.")
 st.markdown("Please be patient while waiting for the LLM-generated suggestions.") 
