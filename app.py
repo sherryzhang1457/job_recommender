@@ -58,7 +58,7 @@ default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
 
 # Find the most relevant job description and return the job posting information 
-def get_relevant_id(query, db, count=3, citizen_required = False and True, year_max = 30):
+def get_relevant_ids(query, db, count=3, citizen_required = False and True, year_max = 30):
     passage = db.query(query_texts=[query],
                      n_results=count, 
                      include = ["distances", "documents", "metadatas"],
@@ -119,7 +119,7 @@ with st.sidebar:
     else:
         citizen_required = False and True
 
-    year_max = st.slider('Years of experience required', 0, 30, 0)
+    year_max = st.slider('Years of experience range', 0, 30, 0)
 
     if resume != '':
         submit = st.button("Generate LLM-powered results")
