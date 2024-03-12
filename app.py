@@ -58,8 +58,24 @@ default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
 
 # Find the most relevant job description and return the job posting information 
-def get_relevant_ids(query, db, count):
-  passage = db.query(query_texts=[query], n_results=count, include = ["distances", "documents", "metadatas"])
+def get_relevant_id(query, db, count=3, citizen_required = False and True, year_max = 30):
+    passage = db.query(query_texts=[query],
+                     n_results=count, 
+                     include = ["distances", "documents", "metadatas"],
+                     where={    
+                       "$and": [
+                      {
+                          "citizen": {
+                              "$eq": citizen_required
+                          }
+                      },
+                      {
+                          "minimum": {
+                              "$lte": year_max
+                          }
+                      }
+                     ] }
+                     )
   ids = passage['ids'][0]
   cos = passage['distances'][0]
   doc = passage['documents'][0]
@@ -97,13 +113,21 @@ with st.sidebar:
     result_count = st.number_input('Results count', 1, 100, 30)
     st.write('')
 
+    citizenship_included = st.checkbox('Include US citizen only job')
+    if citizenship_included:
+        citizen_required = False
+    else:
+        citizen_required = False and True
+
+    year_max = st.slider('Years of experience required', 0, 30, 0)
+
     if resume != '':
         submit = st.button("Generate LLM-powered results")
 
 # Show results
 if submit:
 # Perform embedding search with vector database
-    results, score, doc, meta = get_relevant_ids(resume, collection, result_count)
+    results, score, doc, meta = get_relevant_ids(resume, collection, result_count, citizen_required, year_max)
     
     with st.container():
         for i in range(len(results)):
