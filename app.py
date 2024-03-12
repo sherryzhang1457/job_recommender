@@ -76,11 +76,11 @@ def get_relevant_id(query, db, count=3, citizen_required = False and True, year_
                       }
                      ] }
                      )
-  ids = passage['ids'][0]
-  cos = passage['distances'][0]
-  doc = passage['documents'][0]
-  metadata = passage['metadatas'][0]
-  return ids, cos, doc, metadata
+    ids = passage['ids'][0]
+    cos = passage['distances'][0]
+    doc = passage['documents'][0]
+    metadata = passage['metadatas'][0]
+    return ids, cos, doc, metadata
 
 # Upload resume
 resume = ''
