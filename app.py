@@ -23,7 +23,7 @@ def get_gemini_response(input,pdf_content,prompt):
         "temperature": 0.1
     }
     model=genai.GenerativeModel(model_name = 'gemini-pro',
-                                generation_config = generation_config
+                                # generation_config = generation_config
                             )
     response=model.generate_content([input,pdf_content,prompt])
     return response.text
@@ -44,11 +44,9 @@ Please limit the list up to five most important bullet points.
 """
 
 input_prompt_cover_letter = """
-You are the applicant who applied for this job and want to compose a strong but concise cover letter to convince the employer
-you have the skills and the expereince for this job.
+You are the applicant who applied for this job and want to compose a strong but concise cover letter to convince the employer you have the skills and the expereince for this job.
 The first paragraph of the  cover letter must briefly discuss the your background, including both experience and projects. 
-The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements. 
-Do not inlude the skillset not in the applicant's resume.
+The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements. Do not inlude the skillset not in the applicant's resume.
 The third paragraph discuss the your interest in this role and thanks for the consideration.
 Please limit the word count of cover letter no more than 300 words.
 """
