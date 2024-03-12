@@ -20,10 +20,10 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def get_gemini_response(input,pdf_content,prompt):
     generation_config = {
-        "temperature": 0
+        "temperature": 0.1
     }
     model=genai.GenerativeModel(model_name = 'gemini-pro',
-                               # generation_config = generation_config
+                                generation_config = generation_config
                             )
     response=model.generate_content([input,pdf_content,prompt])
     return response.text
@@ -44,9 +44,11 @@ Please limit the list up to five most important bullet points.
 """
 
 input_prompt_cover_letter = """
-You are the applicant who applied for this job and want to compose a strong but concise cover letter to convince the employer you have the skills and the expereince for this job.
-The first paragraph of the  cover letter must briefly discuss the your backgroud. 
-The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements.
+You are the applicant who applied for this job and want to compose a strong but concise cover letter to convince the employer
+you have the skills and the expereince for this job.
+The first paragraph of the  cover letter must briefly discuss the your background, including both experience and projects. 
+The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements. 
+Do not inlude the skillset not in the applicant's resume.
 The third paragraph discuss the your interest in this role and thanks for the consideration.
 Please limit the word count of cover letter no more than 300 words.
 """
@@ -104,7 +106,7 @@ st.divider()
 # Sidebar for user interaction
 submit = None
 with st.sidebar:
-    uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf")
+    uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf, the app won't save your resume")
   
     if uploaded_file is not None:
         st.write("PDF Uploaded Successfully")
