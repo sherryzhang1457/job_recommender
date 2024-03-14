@@ -12,6 +12,7 @@ import streamlit as st
 import google.generativeai as genai
 import chromadb
 from chromadb.utils import embedding_functions
+from parse_resume import resume_parser
 
 #--------------------------------------------LLM (Gemini pro) API-----------------------------------------------------------#
 # load gemini pro LLM model API from environment variable
@@ -44,9 +45,9 @@ Please limit the list up to five most important bullet points.
 """
 
 input_prompt_cover_letter = """
-You are the applicant who applied for this job and want to compose a strong but concise cover letter to convince the employer you have the skills and the expereince for this job.
+You are the applicant who applied for this job and want to compose a strong but concise cover letter to convince the employer you have the skills and the experience for this job.
 The first paragraph of the  cover letter must briefly discuss the your background, including both experience and projects. 
-The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements. Do not inlude the skillset not in the applicant's resume.
+The second paragraph discuss how the applicant fit this role based on your skillsets matches the job requirements. Do not include the skillset not in the applicant's resume.
 The third paragraph discuss the your interest in this role and thanks for the consideration.
 Please limit the word count of cover letter no more than 300 words.
 """
@@ -58,7 +59,7 @@ default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
 
 # Find the most relevant job description and return the job posting information 
-def get_relevant_ids(query, db, count=3, citizen_required = False and True, year_max = 30):
+def get_relevant_ids(query, db, count=3, citizen_required = False and True, year_min = 0, year_max = 30):
     passage = db.query(query_texts=[query],
                      n_results=count, 
                      include = ["distances", "documents", "metadatas"],
@@ -72,6 +73,11 @@ def get_relevant_ids(query, db, count=3, citizen_required = False and True, year
                       {
                           "minimum": {
                               "$lte": year_max
+                          }
+                      },
+                      {
+                          "minimum": {
+                              "$gte": year_min
                           }
                       }
                      ] }
@@ -104,11 +110,12 @@ st.divider()
 # Sidebar for user interaction
 submit = None
 with st.sidebar:
-    uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please uplaod the pdf, the app won't save your resume")
+    uploaded_file=st.file_uploader("Upload Your Resume",type="pdf",help="Please upload the pdf, the app won't save your resume")
   
     if uploaded_file is not None:
         st.write("PDF Uploaded Successfully")
         resume = input_pdf_text(uploaded_file)
+	resume_parsed = resume_parser(resume)
 
     result_count = st.number_input('Results count', 1, 100, 30)
     st.write('')
@@ -119,7 +126,8 @@ with st.sidebar:
     else:
         citizen_required = False and True
 
-    year_max = st.slider('Years of experience range', 0, 30, 0)
+    year_min = st.slider('Minimum years of experience required', 0, 30, 0)
+    year_max = st.slider('Maximum years of experience required', 0, 30, 30)
 
     if resume != '':
         submit = st.button("Generate LLM-powered results")
@@ -127,7 +135,7 @@ with st.sidebar:
 # Show results
 if submit:
 # Perform embedding search with vector database
-    results, score, doc, meta = get_relevant_ids(resume, collection, result_count, citizen_required, year_max)
+    results, score, doc, meta = get_relevant_ids(resume_parsed, collection, result_count, citizen_required, year_min, year_max)
     
     with st.container():
         for i in range(len(results)):
