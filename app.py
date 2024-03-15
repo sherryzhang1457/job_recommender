@@ -115,7 +115,7 @@ with st.sidebar:
     if uploaded_file is not None:
         st.write("PDF Uploaded Successfully")
         resume = input_pdf_text(uploaded_file)
-	resume_parsed = resume_parser(resume)
+        resume_parsed = resume_parser(resume)
 
     result_count = st.number_input('Results count', 1, 100, 30)
     st.write('')
