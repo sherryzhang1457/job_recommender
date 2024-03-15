@@ -1,5 +1,6 @@
 scikit-learn
 nltk
+spacy
 pysqlite3-binary
 streamlit
 PyPDF2
