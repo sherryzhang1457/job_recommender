@@ -124,7 +124,7 @@ with st.sidebar:
         st.write("PDF Uploaded Successfully")
         resume = input_pdf_text(uploaded_file)
         resume_parsed = resume_parser(resume)
-        resume_summary = get_gemini_response(input = None,resume_parsed,input_prompt_resume_summary)
+        resume_summary = get_gemini_response(input = None,pdf_content = resume_parsed,prompt = input_prompt_resume_summary)
 
     result_count = st.number_input('Results count', 1, 100, 30)
     st.write('')
