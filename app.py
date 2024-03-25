@@ -35,8 +35,9 @@ def get_gemini_response(input,pdf_content,prompt):
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
-read the following resume carefully and summarize it within 100 word to highlight the skills and experiences background 
-including the degree information in the resume.
+read the following resume carefully and summarize it within 200 word to highlight the skills, experiences and the degree information
+in the resume. Please first find the important skills in the resume, then conclude the background of all the experience in the resume and finally
+summarize the education background including the highest degree level and the area of study.
 """
 
 input_prompt_resume1 = """
