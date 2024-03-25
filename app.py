@@ -19,20 +19,23 @@ from parse_resume import resume_parser
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-def get_gemini_response(input,pdf_content,prompt):
+def get_gemini_response(input = None,pdf_content,prompt):
     generation_config = {
         "temperature": 0.1
     }
     model=genai.GenerativeModel(model_name = 'gemini-pro',
                                 # generation_config = generation_config
                             )
-    response=model.generate_content([input,pdf_content,prompt])
+    if input:
+        response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content])
+    else:
+        response=model.generate_content([prompt, 'resume:'+pdf_content])
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
-read the resume carefully and summarize it within 100 word to highlight the skills and experiences background 
+read the following resume carefully and summarize it within 100 word to highlight the skills and experiences background 
 including the degree information in the resume.
 """
 
@@ -121,7 +124,7 @@ with st.sidebar:
         st.write("PDF Uploaded Successfully")
         resume = input_pdf_text(uploaded_file)
         resume_parsed = resume_parser(resume)
-        resume_summary = get_gemini_response(input_prompt_resume_summary,resume_parsed)
+        resume_summary = get_gemini_response(input = None,resume_parsed,input_prompt_resume_summary)
 
     result_count = st.number_input('Results count', 1, 100, 30)
     st.write('')
@@ -152,15 +155,15 @@ if submit:
                 st.write(doc[i])
                 st.link_button("Apply it!", meta[i]['link'], type="primary")
 
-                response=get_gemini_response(input_prompt_resume1,resume,doc[i])
+                response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
                 st.write(response)        
 
-                response=get_gemini_response(input_prompt_resume2,resume,doc[i])
+                response=get_gemini_response(doc[i],resume,input_prompt_resume2)
                 st.subheader("Skills you may want to add")
                 st.write(response)
 
-                response=get_gemini_response(input_prompt_cover_letter,resume,doc[i])
+                response=get_gemini_response(doc[i],resume,input_prompt_cover_letter)
                 st.subheader("Coverletter")
                 st.write(response)
                 time.sleep(2)
