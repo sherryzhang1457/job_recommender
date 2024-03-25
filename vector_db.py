@@ -55,7 +55,7 @@ def clean_job_postings(df):
   df = pd.concat([df, df_exp], axis=1)
   df['required_experience'] = df['required_experience_in_months'] / 12
   df['required_experience'] = df['required_experience'].fillna(0.0)
-  df['citizenship'] = df['job_description'].str.contains('clearance') | (df['job_description'].str.contains('/SCI')) | (df['job_description'].str.contains('US citizenship'))| (df['job_description'].str.contains('Clearance'))
+  df['citizenship'] = df['job_description'].str.contains('clearance') | (df['job_description'].str.contains('SCI')) | (df['job_description'].str.contains('US citizenship'))| (df['job_description'].str.contains('Clearance')) | (df['job_description'].str.contains('US Citizen'))
   return df
 
 df_select = clean_job_postings(df_select)
