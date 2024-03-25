@@ -30,6 +30,11 @@ def get_gemini_response(input,pdf_content,prompt):
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
+input_prompt_resume_summary = """
+You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
+read the resume carefully and summarize it within 100 word to highlight the skills and experiences background 
+including the degree information in the resume.
+"""
 
 input_prompt_resume1 = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
@@ -116,6 +121,7 @@ with st.sidebar:
         st.write("PDF Uploaded Successfully")
         resume = input_pdf_text(uploaded_file)
         resume_parsed = resume_parser(resume)
+        resume_summary = get_gemini_response(input_prompt_resume_summary,resume_parsed)
 
     result_count = st.number_input('Results count', 1, 100, 30)
     st.write('')
@@ -135,7 +141,8 @@ with st.sidebar:
 # Show results
 if submit:
 # Perform embedding search with vector database
-    results, score, doc, meta = get_relevant_ids(resume_parsed, collection, result_count, citizen_required, year_min, year_max)
+    results, score, doc, meta = get_relevant_ids(resume_summary, collection, result_count, citizen_required, year_min, year_max)
+    st.markdown(resume_summary)
     
     with st.container():
         for i in range(len(results)):
