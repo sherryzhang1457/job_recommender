@@ -146,10 +146,10 @@ with st.sidebar:
 if submit:
 # Perform embedding search with vector database
     results, score, doc, meta = get_relevant_ids(resume_summary, collection, result_count, citizen_required, year_min, year_max)
-    st.markdown('##Resume Summary:')
+    st.markdown('## Resume Summary:')
     st.markdown(resume_summary)
     
-    st.markdown('##Matched jobs')    
+    st.markdown('## Matched jobs')    
     with st.container():
         for i in range(len(results)):
             with st.expander(meta[i]['info']):
