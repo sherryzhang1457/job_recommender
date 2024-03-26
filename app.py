@@ -171,5 +171,5 @@ if submit:
                 st.write(response)
                 time.sleep(2)
 
-                if i % 10 == 0:
+                if i % 5 == 0:
                     time.sleep(5)
