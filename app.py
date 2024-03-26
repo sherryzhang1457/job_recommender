@@ -21,15 +21,14 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def get_gemini_response(input,pdf_content,prompt):
     generation_config = {
-        "temperature": 0.1
+        "temperature": 0.0
     }
-    model=genai.GenerativeModel(model_name = 'gemini-pro',
-                                # generation_config = generation_config
-                            )
+    model=genai.GenerativeModel('gemini-pro')
+
     if input:
-        response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content])
+        response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
     else:
-        response=model.generate_content([prompt, 'resume:'+pdf_content])
+        response=model.generate_content([prompt, 'resume:'+pdf_content], generation_config=generation_config)
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
@@ -146,8 +145,10 @@ with st.sidebar:
 if submit:
 # Perform embedding search with vector database
     results, score, doc, meta = get_relevant_ids(resume_summary, collection, result_count, citizen_required, year_min, year_max)
+    st.markdown('Resume Summary:')
     st.markdown(resume_summary)
     
+    st.markdown('Matched jobs')    
     with st.container():
         for i in range(len(results)):
             with st.expander(meta[i]['info']):
