@@ -23,12 +23,34 @@ def get_gemini_response(input,pdf_content,prompt):
     generation_config = {
         "temperature": 0.0
     }
+    safety_settings = [
+    {
+        "category": "HARM_CATEGORY_DANGEROUS",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_HARASSMENT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_HATE_SPEECH",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+        "threshold": "BLOCK_NONE",
+    },
+    ]
     model=genai.GenerativeModel('gemini-pro')
 
     if input:
         response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
     else:
-        response=model.generate_content([prompt, 'resume:'+pdf_content], generation_config=generation_config)
+        response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
@@ -169,7 +191,7 @@ if submit:
                 response=get_gemini_response(doc[i],resume,input_prompt_cover_letter)
                 st.subheader("Coverletter")
                 st.write(response)
-                time.sleep(3)
+                time.sleep(1)
 
                 if i % 5 == 0:
                     time.sleep(5)
