@@ -34,10 +34,10 @@ def get_gemini_response(input,pdf_content,prompt):
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
-read the following resume carefully and summarize it within 300 word to include the following information in the resume step by step. 
+read the following resume carefully and summarize it within 200 word to include the following information in the resume step by step. 
 Please first find the important skills in the resume, then conclude the background including all the work experience
-and projects in the resume. Finally summarize the education background with the highest degree level and the area of study, 
-please do not show the university or school attended.
+and projects in the resume. Finally summarize the education background with the highest degree level and the area of study without
+the university or school attended.
 """
 
 input_prompt_resume1 = """
@@ -169,7 +169,7 @@ if submit:
                 response=get_gemini_response(doc[i],resume,input_prompt_cover_letter)
                 st.subheader("Coverletter")
                 st.write(response)
-                time.sleep(2)
+                time.sleep(3)
 
                 if i % 5 == 0:
                     time.sleep(5)
