@@ -7,10 +7,10 @@ import requests
 
 url = "https://jsearch.p.rapidapi.com/search"
 
-querystring_ds = {"query":"Data scientist","page":"1","num_pages":"10","date_posted":"3days","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs"}
-querystring_ml = {"query":"Machine learning","page":"1","num_pages":"10","date_posted":"3days","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs"}
+querystring_ds = {"query":"Data scientist","page":"1","num_pages":"10","date_posted":"today","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs"}
+querystring_ml = {"query":"Machine learning","page":"1","num_pages":"10","date_posted":"today","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs"}
 
-# "date_posted":"3days"
+# "date_posted":"3days" "today"
 headers = {
 	"X-RapidAPI-Key": "e033f36acdmsh5501b64fe6a088fp1ca60bjsn3c0eacac535f",
 	"X-RapidAPI-Host": "jsearch.p.rapidapi.com"
