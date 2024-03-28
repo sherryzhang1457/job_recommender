@@ -72,7 +72,7 @@ Please limit the list up to five most important bullet points and no more than 3
 input_prompt_resume2 = """
 You are submitting a resume to a job with the provided job description. 
 Find out the requirements in the job description you should add to make you qualify for this job.
-Please limit the list up to five most important bullet points.
+Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
 """
 
 input_prompt_cover_letter = """
