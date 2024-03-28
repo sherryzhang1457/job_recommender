@@ -158,8 +158,8 @@ with st.sidebar:
     else:
         citizen_required = False and True
 
-    year_min = st.slider('Minimum years of experience required', 0, 30, 0)
-    year_max = st.slider('Maximum years of experience required', 0, 30, 30)
+    year_min = st.slider('Minimum years of experience required', 0, 20, 0)
+    year_max = st.slider('Maximum years of experience required', 0, 20, 20)
 
     if resume != '':
         submit = st.button("Generate LLM-powered results")
