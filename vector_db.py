@@ -7,8 +7,8 @@ import requests
 
 url = "https://jsearch.p.rapidapi.com/search"
 
-querystring_ds = {"query":"Data scientist","page":"1","num_pages":"10","date_posted":"today","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs"}
-querystring_ml = {"query":"Machine learning","page":"1","num_pages":"10","date_posted":"today","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs"}
+querystring_ds = {"query":"Data scientist","page":"1","num_pages":"10","date_posted":"today","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs, geebo"}
+querystring_ml = {"query":"Machine learning","page":"1","num_pages":"10","date_posted":"today","employment_types":"FULLTIME, CONTRACTOR","exclude_job_publishers":"Dice, jooble, Clearance Jobs, geebo"}
 
 # "date_posted":"3days" "today"
 headers = {
