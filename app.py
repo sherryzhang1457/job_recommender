@@ -133,7 +133,7 @@ def input_pdf_text(uploaded_file):
 #
 cohere_api_key=os.getenv("COHERE_API_KEY")
 co = cohere.Client(cohere_api_key)
-def rerank_results(co, query = resume_parsed, docs = doc, n = 3):
+def rerank_results(co, query, docs = doc, n = 3):
     results = co.rerank(model = 'rerank-english-v2.0', query = query, documents = docs, top_n = n)
     return results
 
@@ -176,12 +176,14 @@ with st.sidebar:
 
 # Show results
 if submit:
-# Perform embedding search with vector database
-    results, score, doc, meta = get_relevant_ids(resume_parsed, collection, result_count, citizen_required, year_min, year_max)
-    if cohere_included:
-        rerank_results = rerank_results(co, query = resume_parsed, docs = doc, n = result_count)
+    # Print summarized resume by LLM
     st.markdown('## Resume Summary:')
     st.markdown(resume_summary)
+    # Perform embedding search with vector database
+    results, score, doc, meta = get_relevant_ids(resume_summary, collection, result_count, citizen_required, year_min, year_max)
+    if cohere_included:
+        rerank_results = rerank_results(co, query = resume_summary, docs = doc, n = result_count)
+
     
     st.markdown('## Matched jobs')    
     with st.container():
