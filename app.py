@@ -133,7 +133,7 @@ def input_pdf_text(uploaded_file):
 #
 cohere_api_key=os.getenv("COHERE_API_KEY")
 co = cohere.Client(cohere_api_key)
-def rerank_results(co, query, docs = doc, n = 3):
+def rerank_results(co, query, docs, n = 3):
     results = co.rerank(model = 'rerank-english-v2.0', query = query, documents = docs, top_n = n)
     return results
 
