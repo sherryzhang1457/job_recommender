@@ -196,6 +196,7 @@ if submit:
 	    else:
 		i = index	
 		score = 1 - score[i]
+		    
             with st.expander(meta[i]['info']):
                 st.markdown(f'Similarity score: %.2f' %(score))
                 st.markdown('**Job Description**')
