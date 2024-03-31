@@ -11,6 +11,7 @@ import PyPDF2 as pdf
 import streamlit as st
 import google.generativeai as genai
 import chromadb
+import cohere
 from chromadb.utils import embedding_functions
 from parse_resume import resume_parser
 
@@ -97,6 +98,13 @@ def input_pdf_text(uploaded_file):
         page=reader.pages[page]
         text+=str(page.extract_text())
     return text
+#---------------------------------------------------Rerank---------------------------------------------------------#
+#
+cohere_api_key=os.getenv("COHERE_API_KEY")
+co = cohere.Client(cohere_api_key)
+def rerank_results(co, query = resume_parsed, docs = doc, n = 3):
+    results = co.rerank(model = 'rerank-english-v2.0', query = query, documents = docs, top_n = n)
+    return results
 
 #---------------------------------------------------Website---------------------------------------------------------#
 # Page setup
@@ -126,6 +134,12 @@ with st.sidebar:
     else:
         citizen_required = False and True
 
+    cohere_included = st.checkbox('Include Cohere reranking (More time needed)')
+    if cohere_included:
+        cohere_required = True
+    else:
+        cohere_required = False
+
     year_min = st.slider('Minimum years of experience required', 0, 30, 0)
     year_max = st.slider('Maximum years of experience required', 0, 30, 30)
 
@@ -136,11 +150,18 @@ with st.sidebar:
 if submit:
 # Perform embedding search with vector database
     results, score, doc, meta = get_relevant_ids(resume_parsed, collection, result_count, citizen_required, year_min, year_max)
-    
+    if cohere_required:
+	rerank_results = rerank_results(co, query = resume_parsed, docs = doc, n = result_count)
     with st.container():
-        for i in range(len(results)):
+        for index in range(len(results)):
+	    if cohere_required:
+		i = rerank_results.results[index].index
+		score = rerank_results.results[index].relevance_score
+	    else:
+		i = index	
+		score = 1 - score[i]
             with st.expander(meta[i]['info']):
-                st.markdown(f'Similarity score: %.2f' %(1 - score[i]))
+                st.markdown(f'Similarity score: %.2f' %(score))
                 st.markdown('**Job Description**')
                 st.write(doc[i])
                 st.link_button("Apply it!", meta[i]['link'], type="primary")
@@ -156,7 +177,6 @@ if submit:
                 response=get_gemini_response(input_prompt_cover_letter,resume,doc[i])
                 st.subheader("Coverletter")
                 st.write(response)
-                time.sleep(2)
 
                 if i % 10 == 0:
                     time.sleep(5)
