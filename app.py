@@ -183,7 +183,7 @@ if submit:
 # Perform embedding search with vector database
     results, score, doc, meta = get_relevant_ids(resume_parsed, collection, result_count, citizen_required, year_min, year_max)
     if cohere_required:
-	rerank_results = rerank_results(co, query = resume_parsed, docs = doc, n = result_count)
+        rerank_results = rerank_results(co, query = resume_parsed, docs = doc, n = result_count)
     st.markdown('## Resume Summary:')
     st.markdown(resume_summary)
     
