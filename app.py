@@ -167,10 +167,6 @@ with st.sidebar:
         citizen_required = False and True
 
     cohere_included = st.checkbox('Include Cohere reranking (More time needed)')
-    if cohere_included:
-        cohere_required = True
-    else:
-        cohere_required = False
 
     year_min = st.slider('Minimum years of experience required', 0, 20, 0)
     year_max = st.slider('Maximum years of experience required', 0, 20, 20)
@@ -182,7 +178,7 @@ with st.sidebar:
 if submit:
 # Perform embedding search with vector database
     results, score, doc, meta = get_relevant_ids(resume_parsed, collection, result_count, citizen_required, year_min, year_max)
-    if cohere_required:
+    if cohere_included:
         rerank_results = rerank_results(co, query = resume_parsed, docs = doc, n = result_count)
     st.markdown('## Resume Summary:')
     st.markdown(resume_summary)
@@ -190,9 +186,9 @@ if submit:
     st.markdown('## Matched jobs')    
     with st.container():
         for index in range(len(results)):
-	    if cohere_required:
+	    if cohere_included:
 		i = rerank_results.results[index].index
-		score = rerank_results.results[index].relevance_score
+		:score = rerank_results.results[index].relevance_score
 	    else:
 		i = index	
 		score = 1 - score[i]
