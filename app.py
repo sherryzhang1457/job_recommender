@@ -186,9 +186,9 @@ if submit:
     st.markdown('## Matched jobs')    
     with st.container():
         for index in range(len(results)):
-	    if cohere_included:
-		i = rerank_results.results[index].index
-		:score = rerank_results.results[index].relevance_score
+            if cohere_included:
+                i = rerank_results.results[index].index
+                score = rerank_results.results[index].relevance_score
 	    else:
 		i = index	
 		score = 1 - score[i]
