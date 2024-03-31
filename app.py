@@ -22,15 +22,46 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def get_gemini_response(input,pdf_content,prompt):
     generation_config = {
-        "temperature": 0.1
+        "temperature": 0.0
     }
-    model=genai.GenerativeModel(model_name = 'gemini-pro',
-                                # generation_config = generation_config
-                            )
-    response=model.generate_content([input,pdf_content,prompt])
+    safety_settings = [
+    {
+        "category": "HARM_CATEGORY_DANGEROUS",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_HARASSMENT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_HATE_SPEECH",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+        "threshold": "BLOCK_NONE",
+    },
+    ]
+    model=genai.GenerativeModel('gemini-pro')
+
+    if input:
+        response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
+    else:
+        response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
     return response.text
 
 # Generate prompts to generate resume revision and cover letter template
+input_prompt_resume_summary = """
+You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
+read the following resume carefully and summarize it within 200 word to include the following information in the resume step by step. 
+Please first find the important skills in the resume, then conclude the background including all the work experience
+and projects in the resume. Finally summarize the education background with the highest degree level and the area of study and double 
+check to omit the university or school attended.
+"""
 
 input_prompt_resume1 = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
@@ -42,7 +73,7 @@ Please limit the list up to five most important bullet points and no more than 3
 input_prompt_resume2 = """
 You are submitting a resume to a job with the provided job description. 
 Find out the requirements in the job description you should add to make you qualify for this job.
-Please limit the list up to five most important bullet points.
+Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
 """
 
 input_prompt_cover_letter = """
@@ -124,6 +155,7 @@ with st.sidebar:
         st.write("PDF Uploaded Successfully")
         resume = input_pdf_text(uploaded_file)
         resume_parsed = resume_parser(resume)
+        resume_summary = get_gemini_response(input = None,pdf_content = resume_parsed,prompt = input_prompt_resume_summary)
 
     result_count = st.number_input('Results count', 1, 100, 30)
     st.write('')
@@ -140,8 +172,8 @@ with st.sidebar:
     else:
         cohere_required = False
 
-    year_min = st.slider('Minimum years of experience required', 0, 30, 0)
-    year_max = st.slider('Maximum years of experience required', 0, 30, 30)
+    year_min = st.slider('Minimum years of experience required', 0, 20, 0)
+    year_max = st.slider('Maximum years of experience required', 0, 20, 20)
 
     if resume != '':
         submit = st.button("Generate LLM-powered results")
@@ -152,6 +184,10 @@ if submit:
     results, score, doc, meta = get_relevant_ids(resume_parsed, collection, result_count, citizen_required, year_min, year_max)
     if cohere_required:
 	rerank_results = rerank_results(co, query = resume_parsed, docs = doc, n = result_count)
+    st.markdown('## Resume Summary:')
+    st.markdown(resume_summary)
+    
+    st.markdown('## Matched jobs')    
     with st.container():
         for index in range(len(results)):
 	    if cohere_required:
@@ -166,17 +202,17 @@ if submit:
                 st.write(doc[i])
                 st.link_button("Apply it!", meta[i]['link'], type="primary")
 
-                response=get_gemini_response(input_prompt_resume1,resume,doc[i])
+                response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
                 st.write(response)        
 
-                response=get_gemini_response(input_prompt_resume2,resume,doc[i])
+                response=get_gemini_response(doc[i],resume,input_prompt_resume2)
                 st.subheader("Skills you may want to add")
                 st.write(response)
 
-                response=get_gemini_response(input_prompt_cover_letter,resume,doc[i])
+                response=get_gemini_response(doc[i],resume,input_prompt_cover_letter)
                 st.subheader("Coverletter")
                 st.write(response)
 
-                if i % 10 == 0:
+                if i % 5 == 0:
                     time.sleep(5)
