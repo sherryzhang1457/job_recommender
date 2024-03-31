@@ -189,9 +189,9 @@ if submit:
             if cohere_included:
                 i = rerank_results.results[index].index
                 score = rerank_results.results[index].relevance_score
-	    else:
-		i = index	
-		score = 1 - score[i]
+            else:
+                i = index	
+                score = 1 - score[i]
 		    
             with st.expander(meta[i]['info']):
                 st.markdown(f'Similarity score: %.2f' %(score))
