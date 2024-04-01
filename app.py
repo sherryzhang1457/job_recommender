@@ -74,7 +74,8 @@ check to omit the university or school attended. In other words, do not include 
 input_prompt_resume1 = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
 your task is to evaluate the resume against the provided job description. 
-Find out the requirements that make this resume disqualified for this job in a list. 
+Find out the requirements that make this resume disqualified for this job in a list. Please first check the required or basic qualification,
+then move on to the preferred qualifications.
 Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
 """
 
@@ -211,7 +212,15 @@ if submit:
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
-                st.write(response)        
+		try:
+  		    st.write(response)
+                except ValueError:
+		    # If the response doesn't contain text, check if the prompt was blocked.
+		    st.write(response.prompt_feedback)
+		    # Also check the finish reason to see if the response was blocked.
+		    st.write(response.candidates[0].finish_reason)
+		    # If the finish reason was SAFETY, the safety ratings have more details.
+		    st.write(response.candidates[0].safety_ratings)    
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume2)
                 st.subheader("Skills you may want to add")
