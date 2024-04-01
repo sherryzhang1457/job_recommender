@@ -213,14 +213,14 @@ if submit:
                 response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
                 try:
-  		    st.write(response)
+                    st.write(response)
                 except ValueError:
-		    # If the response doesn't contain text, check if the prompt was blocked.
-		    st.write(response.prompt_feedback)
+                    # If the response doesn't contain text, check if the prompt was blocked.
+                    st.write(response.prompt_feedback)
 		    # Also check the finish reason to see if the response was blocked.
-		    st.write(response.candidates[0].finish_reason)
+                    st.write(response.candidates[0].finish_reason)
 		    # If the finish reason was SAFETY, the safety ratings have more details.
-		    st.write(response.candidates[0].safety_ratings)    
+                    st.write(response.candidates[0].safety_ratings)    
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume2)
                 st.subheader("Skills you may want to add")
