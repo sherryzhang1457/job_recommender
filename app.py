@@ -212,7 +212,7 @@ if submit:
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
-		try:
+                try:
   		    st.write(response)
                 except ValueError:
 		    # If the response doesn't contain text, check if the prompt was blocked.
