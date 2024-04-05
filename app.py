@@ -189,7 +189,7 @@ if submit:
     st.markdown('## Resume Summary:')
     st.markdown(resume_summary)
     # Perform embedding search with vector database
-    results, score, doc, meta = get_relevant_ids(resume_summary, collection, result_count, citizen_required, year_min, year_max)
+    results, scores, doc, meta = get_relevant_ids(resume_summary, collection, result_count, citizen_required, year_min, year_max)
     if cohere_included:
         rerank_results = rerank_results(co, query = resume_summary, docs = doc, n = result_count)
 
@@ -202,7 +202,7 @@ if submit:
                 score = rerank_results.results[index].relevance_score
             else:
                 i = index	
-                score = 1 - score[i]
+                score = 1 - scores[i]
 		    
             with st.expander(meta[i]['info']):
                 st.markdown(f'Similarity score: %.2f' %(score))
