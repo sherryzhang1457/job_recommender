@@ -100,6 +100,7 @@ default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_collection(name="job_postings")
 
 # Find the most relevant job description and return the job posting information 
+@st.cache_data
 def get_relevant_ids(query, db, count=3, citizen_required = False and True, year_min = 0, year_max = 30):
     passage = db.query(query_texts=[query],
                      n_results=count, 
