@@ -184,6 +184,7 @@ with st.sidebar:
         submit = st.button("Generate LLM-powered results")
 
 # Show results
+@st.cache_data(ttl=60000)
 if submit:
     # Print summarized resume by LLM
     st.markdown('## Resume Summary:')
