@@ -132,6 +132,7 @@ def get_relevant_ids(query, db, count=3, citizen_required = False and True, year
 
 # Upload resume
 resume = ''
+@st.cache_data
 def input_pdf_text(uploaded_file):
     reader=pdf.PdfReader(uploaded_file)
     text=""
