@@ -149,6 +149,7 @@ def rerank_results(co, query, docs, n = 3):
 #---------------------------------------------------Website---------------------------------------------------------#
 # Page setup
 @st.cache_data(ttl=60000)
+
 st.title("Data Science Job Matching and Resume Enhancement")
 st.markdown("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \
          job openings and provide specific resume revision suggestion and cover letter template.")
