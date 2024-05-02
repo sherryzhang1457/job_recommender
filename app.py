@@ -31,35 +31,22 @@ def get_gemini_response(input,pdf_content,prompt):
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE
     }
-    # safety_settings = [
-    # {
-    #     "category": "HARM_CATEGORY_DANGEROUS",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_HARASSMENT",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_HATE_SPEECH",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # ]
     model=genai.GenerativeModel('gemini-pro')
 
     if input:
         response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
     else:
         response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
-    return response.text
+    try:
+        text = response.text
+    except ValueError:
+        # If the response doesn't contain text, check if the prompt was blocked.
+        print(response.prompt_feedback)
+        # Also check the finish reason to see if the response was blocked.
+        print(response.candidates[0].finish_reason)
+        # If the finish reason was SAFETY, the safety ratings have more details.
+        print(response.candidates[0].safety_ratings)
+    return text
 
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
