@@ -38,7 +38,7 @@ def get_gemini_response(input,pdf_content,prompt):
     else:
         response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
     try:
-        text = response.text
+        results = response.text
     except ValueError:
         # If the response doesn't contain text, check if the prompt was blocked.
         print(response.prompt_feedback)
@@ -46,7 +46,7 @@ def get_gemini_response(input,pdf_content,prompt):
         print(response.candidates[0].finish_reason)
         # If the finish reason was SAFETY, the safety ratings have more details.
         print(response.candidates[0].safety_ratings)
-    return text
+    return results
 
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
