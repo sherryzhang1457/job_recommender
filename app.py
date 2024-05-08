@@ -202,7 +202,7 @@ if submit:
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
-		st.write(response) 
+                st.write(response) 
       #           try:
       #               st.write(response)
       #           except ValueError:
