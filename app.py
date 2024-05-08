@@ -48,7 +48,7 @@ def get_gemini_response(input,pdf_content,prompt):
         st.write(response.candidates[0].safety_ratings)
     else:
         error_message = 'Encounter Error with Gemini AI Model'
-	return error_message
+        return error_message
     return results
 
 # Generate prompts to generate resume revision and cover letter template
