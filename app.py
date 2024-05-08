@@ -41,11 +41,14 @@ def get_gemini_response(input,pdf_content,prompt):
         results = response.text
     except ValueError:
         # If the response doesn't contain text, check if the prompt was blocked.
-        print(response.prompt_feedback)
+        st.write(response.prompt_feedback)
         # Also check the finish reason to see if the response was blocked.
-        print(response.candidates[0].finish_reason)
+        st.write(response.candidates[0].finish_reason)
         # If the finish reason was SAFETY, the safety ratings have more details.
-        print(response.candidates[0].safety_ratings)
+        st.write(response.candidates[0].safety_ratings)
+    else:
+        error_message = 'Encounter Error with Gemini AI Model'
+	return error_message
     return results
 
 # Generate prompts to generate resume revision and cover letter template
@@ -199,15 +202,16 @@ if submit:
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
-                try:
-                    st.write(response)
-                except ValueError:
-                    # If the response doesn't contain text, check if the prompt was blocked.
-                    st.write(response.prompt_feedback)
-		    # Also check the finish reason to see if the response was blocked.
-                    st.write(response.candidates[0].finish_reason)
-		    # If the finish reason was SAFETY, the safety ratings have more details.
-                    st.write(response.candidates[0].safety_ratings)    
+		st.write(response) 
+      #           try:
+      #               st.write(response)
+      #           except ValueError:
+      #               # If the response doesn't contain text, check if the prompt was blocked.
+      #               st.write(response.prompt_feedback)
+		    # # Also check the finish reason to see if the response was blocked.
+      #               st.write(response.candidates[0].finish_reason)
+		    # # If the finish reason was SAFETY, the safety ratings have more details.
+      #               st.write(response.candidates[0].safety_ratings)    
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume2)
                 st.subheader("Skills you may want to add")
