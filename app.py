@@ -33,12 +33,12 @@ def get_gemini_response(input,pdf_content,prompt):
     }
     model=genai.GenerativeModel('gemini-pro')
 
-    if input:
-        response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
-    else:
-        response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
     results = ''
     try:
+        if input:
+            response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
+        else:
+            response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
         results = response.text
     except ValueError:
         # If the response doesn't contain text, check if the prompt was blocked.
