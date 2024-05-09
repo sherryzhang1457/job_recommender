@@ -59,7 +59,8 @@ def get_gemini_response(input,pdf_content,prompt):
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
-read the following resume carefully and summarize it within 200 word to include the following information in the resume step by step. 
+read the following resume carefully and summarize it within 500 word to include the following information in the resume step by step.
+If there is a summary included, copy the summary directly to your response and append the following contents.
 Please first find the important skills and tools included in the resume. 
 Then conclude the background including all the work experience, do not need to include the specific number in each experience.
 and projects in the resume. Finally summarize the education background with the highest degree level and the area of study and double 
@@ -67,17 +68,17 @@ check to omit the university or school attended. In other words, do not include 
 """
 
 input_prompt_resume1 = """
-You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
+You are a skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
 your task is to evaluate the resume against the provided job description. 
 Find out the requirements that make this resume disqualified for this job in a list. Please first check the required or basic qualification,
 then move on to the preferred qualifications.
-Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
+Please limit the list no more than four most important bullet points and no more than 30 words for each bullet points.
 """
 
 input_prompt_resume2 = """
 You are submitting a resume to a job with the provided job description. 
 Find out the requirements in the job description you should add to make you qualify for this job.
-Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
+Please limit the list no more than three most important bullet points and no more than 30 words for each bullet points.
 """
 
 input_prompt_cover_letter = """
