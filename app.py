@@ -48,9 +48,9 @@ def get_gemini_response(input,pdf_content,prompt):
         # If the finish reason was SAFETY, the safety ratings have more details.
         st.write(response.candidates[0].safety_ratings)
         results = 'Encounter Error with Gemini AI Model'
-    except InternalServerError:
-        st.write(response.prompt_feedback)
-        results = 'Encounter Error with Gemini AI Model'
+    # except InternalServerError:
+    #     st.write(response.prompt_feedback)
+    #     results = 'Encounter Error with Gemini AI Model'
     except Exception as err:
         st.write(err)
         results = 'Encounter Error with Gemini AI Model'	    
