@@ -59,7 +59,7 @@ def get_gemini_response(input,pdf_content,prompt):
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
-read the following resume carefully and summarize it within 500 word to include the following information in the resume step by step.
+read the following resume carefully and summarize it within 700 word to include the following information in the resume step by step.
 If there is a summary included, copy the summary directly to your response and append the following contents.
 Please first find the important skills and tools included in the resume. 
 Then conclude the background including all the work experience, do not need to include the specific number in each experience.
@@ -209,15 +209,6 @@ if submit:
                 response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
                 st.write(response) 
-      #           try:
-      #               st.write(response)
-      #           except ValueError:
-      #               # If the response doesn't contain text, check if the prompt was blocked.
-      #               st.write(response.prompt_feedback)
-		    # # Also check the finish reason to see if the response was blocked.
-      #               st.write(response.candidates[0].finish_reason)
-		    # # If the finish reason was SAFETY, the safety ratings have more details.
-      #               st.write(response.candidates[0].safety_ratings)    
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume2)
                 st.subheader("Skills you may want to add")
