@@ -31,40 +31,36 @@ def get_gemini_response(input,pdf_content,prompt):
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE
     }
-    # safety_settings = [
-    # {
-    #     "category": "HARM_CATEGORY_DANGEROUS",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_HARASSMENT",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_HATE_SPEECH",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # {
-    #     "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-    #     "threshold": "BLOCK_NONE",
-    # },
-    # ]
     model=genai.GenerativeModel('gemini-pro')
 
-    if input:
-        response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
-    else:
-        response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
-    return response.text
+    results = ''
+    try:
+        if input:
+            response=model.generate_content([prompt,'job description:'+input,'resume:'+pdf_content], generation_config=generation_config)
+        else:
+            response=model.generate_content([prompt, 'resume:'+pdf_content], safety_settings=safety_settings)
+        results = response.text
+    except ValueError:
+        # If the response doesn't contain text, check if the prompt was blocked.
+        st.write(response.prompt_feedback)
+        # Also check the finish reason to see if the response was blocked.
+        st.write(response.candidates[0].finish_reason)
+        # If the finish reason was SAFETY, the safety ratings have more details.
+        st.write(response.candidates[0].safety_ratings)
+        results = 'Encounter Error with Gemini AI Model'
+    # except InternalServerError:
+    #     st.write(response.prompt_feedback)
+    #     results = 'Encounter Error with Gemini AI Model'
+    except Exception as err:
+        st.write(err)
+        results = 'Encounter Error with Gemini AI Model'	    
+    return results
 
 # Generate prompts to generate resume revision and cover letter template
 input_prompt_resume_summary = """
 You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, please 
-read the following resume carefully and summarize it within 200 word to include the following information in the resume step by step. 
+read the following resume carefully and summarize it within 500 word to include the following information in the resume step by step.
+If there is a summary included, copy the summary directly to your response and append the following contents.
 Please first find the important skills and tools included in the resume. 
 Then conclude the background including all the work experience, do not need to include the specific number in each experience.
 and projects in the resume. Finally summarize the education background with the highest degree level and the area of study and double 
@@ -72,17 +68,17 @@ check to omit the university or school attended. In other words, do not include 
 """
 
 input_prompt_resume1 = """
-You are an skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
+You are a skilled Applicant Tracking System scanner with a deep understanding of Applicant Tracking System functionality, 
 your task is to evaluate the resume against the provided job description. 
 Find out the requirements that make this resume disqualified for this job in a list. Please first check the required or basic qualification,
 then move on to the preferred qualifications.
-Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
+Please limit the list no more than four most important bullet points and no more than 30 words for each bullet points.
 """
 
 input_prompt_resume2 = """
 You are submitting a resume to a job with the provided job description. 
 Find out the requirements in the job description you should add to make you qualify for this job.
-Please limit the list up to five most important bullet points and no more than 30 words for each bullet points.
+Please limit the list no more than three most important bullet points and no more than 30 words for each bullet points.
 """
 
 input_prompt_cover_letter = """
@@ -131,6 +127,7 @@ def get_relevant_ids(query, db, count=3, citizen_required = False and True, year
 
 # Upload resume
 resume = ''
+@st.cache_data
 def input_pdf_text(uploaded_file):
     reader=pdf.PdfReader(uploaded_file)
     text=""
@@ -148,7 +145,6 @@ def rerank_results(co, query, docs, n = 3):
 
 #---------------------------------------------------Website---------------------------------------------------------#
 # Page setup
-
 st.title("Data Science Job Matching and Resume Enhancement")
 st.markdown("Powered by Gemini Pro and Chroma vector database to help you find the most relevant \
          job openings and provide specific resume revision suggestion and cover letter template.")
@@ -212,15 +208,16 @@ if submit:
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume1)
                 st.subheader("Disqualifications")
-                try:
-                    st.write(response)
-                except ValueError:
-                    # If the response doesn't contain text, check if the prompt was blocked.
-                    st.write(response.prompt_feedback)
-		    # Also check the finish reason to see if the response was blocked.
-                    st.write(response.candidates[0].finish_reason)
-		    # If the finish reason was SAFETY, the safety ratings have more details.
-                    st.write(response.candidates[0].safety_ratings)    
+                st.write(response) 
+      #           try:
+      #               st.write(response)
+      #           except ValueError:
+      #               # If the response doesn't contain text, check if the prompt was blocked.
+      #               st.write(response.prompt_feedback)
+		    # # Also check the finish reason to see if the response was blocked.
+      #               st.write(response.candidates[0].finish_reason)
+		    # # If the finish reason was SAFETY, the safety ratings have more details.
+      #               st.write(response.candidates[0].safety_ratings)    
 
                 response=get_gemini_response(doc[i],resume,input_prompt_resume2)
                 st.subheader("Skills you may want to add")
