@@ -177,6 +177,8 @@ with st.sidebar:
     year_max = st.slider('Maximum years of experience required', 0, 20, 20)
 
     if resume != '':
+        resume_parsed = resume_parser(resume)
+        resume_summary = get_gemini_response(input = None,pdf_content = resume_parsed,prompt = input_prompt_resume_summary)
         submit = st.button("Generate LLM-powered results")
 
 # Show results
