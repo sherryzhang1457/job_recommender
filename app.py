@@ -93,7 +93,7 @@ Please limit the word count of cover letter no more than 300 words.
 # Get vector database collection from local storage
 chroma_client = chromadb.PersistentClient(path='job_database/')
 default_ef = embedding_functions.DefaultEmbeddingFunction()
-collection = chroma_client.get_collection(name="job_postings1")
+collection = chroma_client.get_collection(name="job_postings")
 
 # Find the most relevant job description and return the job posting information 
 def get_relevant_ids(query, db, count=3, citizen_required = False and True, year_min = 0, year_max = 30):
