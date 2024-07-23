@@ -180,7 +180,7 @@ with st.sidebar:
         resume_parsed = resume_parser(resume)
         resume_summary = get_gemini_response(input = None,pdf_content = resume_parsed,prompt = input_prompt_resume_summary)
         submit = st.button("Generate LLM-powered results")
-	st.markdown('## Resume Summary:')
+        st.markdown('## Resume Summary:')
         st.markdown(resume_summary)
 
 # Show results
